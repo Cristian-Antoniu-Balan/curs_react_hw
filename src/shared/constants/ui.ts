@@ -19,6 +19,7 @@ export const UiColor = {
 export type UiColor = (typeof UiColor)[keyof typeof UiColor]
 
 export const UiDisplay = {
+  Flex: 'flex',
   InlineFlex: 'inline-flex',
 } as const
 
@@ -32,6 +33,7 @@ export type UiTransition = (typeof UiTransition)[keyof typeof UiTransition]
 
 export const UiOverflow = {
   Hidden: 'hidden',
+  Auto: 'auto',
 } as const
 
 export type UiOverflow = (typeof UiOverflow)[keyof typeof UiOverflow]
@@ -50,6 +52,7 @@ export const UiFlexAlign = {
 export type UiFlexAlign = (typeof UiFlexAlign)[keyof typeof UiFlexAlign]
 
 export const UiFlexJustify = {
+  Start: 'flex-start',
   Center: 'center',
   SpaceBetween: 'space-between',
 } as const
@@ -111,11 +114,19 @@ export type UiSpace = (typeof UiSpace)[keyof typeof UiSpace]
 export const UiMinHeight = {
   Viewport: '100vh',
   BrandMark: '10px',
+  Zero: '0',
 } as const
+
+export const UiHeight = {
+  Full: '100%',
+} as const
+
+export type UiHeight = (typeof UiHeight)[keyof typeof UiHeight]
 
 export type UiMinHeight = (typeof UiMinHeight)[keyof typeof UiMinHeight]
 
 export const UiBorderWidth = {
+  None: '0',
   OnePx: '1px',
 } as const
 
@@ -267,6 +278,14 @@ export type ToastSpinnerSize =
 export const UiCursor = {
   Pointer: 'pointer',
 } as const
+
+export const UiKeyboardKey = {
+  Enter: 'Enter',
+  Space: ' ',
+} as const
+
+export type UiKeyboardKey =
+  (typeof UiKeyboardKey)[keyof typeof UiKeyboardKey]
 
 export type UiCursor = (typeof UiCursor)[keyof typeof UiCursor]
 
@@ -455,13 +474,14 @@ export const UiWhiteSpace = {
 export type UiWhiteSpace = (typeof UiWhiteSpace)[keyof typeof UiWhiteSpace]
 
 export const UiTextAlign = {
+  Left: 'left',
   Center: 'center',
 } as const
 
 export type UiTextAlign = (typeof UiTextAlign)[keyof typeof UiTextAlign]
 
 export const UiFlexGrow = {
-  One: '1',
+  One: 1,
 } as const
 
 export type UiFlexGrow = (typeof UiFlexGrow)[keyof typeof UiFlexGrow]

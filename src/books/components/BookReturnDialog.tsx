@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import {
   Alert,
+  Box,
   Button,
   Field,
   NativeSelect,
@@ -13,24 +14,96 @@ import type { Loan } from '@/loans/types/loan'
 import { BookSelectEmptyValue } from '@/books/constants/sort'
 import { bookStrings } from '@/books/constants/strings'
 import type { Book } from '@/books/types/book'
-import { formatLoanOptionLabel } from '@/books/utils/formatMemberLabel'
+import {
+  formatLoanOptionLabel,
+  formatMemberName,
+} from '@/books/utils/formatMemberLabel'
 import { resolveErrorMessage } from '@/books/utils/resolveErrorMessage'
 import { AppDialogShell } from '@/shared/components/AppDialogShell'
 import {
   UiAlertStatus,
+  UiBgToken,
+  UiBorderColor,
+  UiBorderWidth,
   UiButtonColorPalette,
   UiButtonVariant,
   UiColor,
+  UiFontSize,
+  UiFontWeight,
   UiGap,
+  UiLetterSpacing,
   UiNativeSelectSize,
+  UiRadius,
+  UiSpace,
+  UiTextTransform,
   UiWidth,
 } from '@/shared/constants/ui'
+import { formatDateTime } from '@/shared/utils/formatDateTime'
 
 type BookReturnDialogProps = {
   open: boolean
   book: Book | null
   onOpenChange: (open: boolean) => void
   onReturned: () => Promise<void> | void
+}
+
+type SummaryRowProps = {
+  label: string
+  value: string
+}
+
+function SummaryRow({ label, value }: SummaryRowProps) {
+  return (
+    <Box
+      py={UiSpace.Three}
+      borderBottomWidth={UiBorderWidth.OnePx}
+      borderColor={UiBorderColor.Panel}
+      _last={{ borderBottomWidth: UiBorderWidth.None }}
+    >
+      <Text
+        fontSize={UiFontSize.Xs}
+        color={UiColor.Muted}
+        textTransform={UiTextTransform.Uppercase}
+        letterSpacing={UiLetterSpacing.Wide}
+        fontWeight={UiFontWeight.Semibold}
+        mb={UiSpace.One}
+      >
+        {label}
+      </Text>
+      <Text fontSize={UiFontSize.Md} fontWeight={UiFontWeight.Medium}>
+        {value}
+      </Text>
+    </Box>
+  )
+}
+
+type LoanSummaryProps = {
+  loan: Loan
+}
+
+function LoanSummary({ loan }: LoanSummaryProps) {
+  return (
+    <Box
+      borderWidth={UiBorderWidth.OnePx}
+      borderColor={UiBorderColor.Panel}
+      borderRadius={UiRadius.Control}
+      bg={UiBgToken.AppCanvas}
+      px={UiSpace.Four}
+    >
+      <SummaryRow
+        label={bookStrings.returnMemberLabel}
+        value={formatMemberName(loan.member)}
+      />
+      <SummaryRow
+        label={bookStrings.returnEmailLabel}
+        value={loan.member.email}
+      />
+      <SummaryRow
+        label={bookStrings.returnLoanedAtLabel}
+        value={formatDateTime(loan.loanedAt)}
+      />
+    </Box>
+  )
 }
 
 export function BookReturnDialog({
@@ -107,6 +180,8 @@ export function BookReturnDialog({
     }
   }
 
+  const selectedLoan = loans.find((loan) => loan.id === loanId) ?? null
+
   let bodyContent = null
 
   if (loadingLoans) {
@@ -174,14 +249,16 @@ export function BookReturnDialog({
       )
     }
 
-    if (loans.length === 1) {
-      loanPicker = <Text>{formatLoanOptionLabel(loans[0])}</Text>
+    let loanSummary = null
+    if (selectedLoan) {
+      loanSummary = <LoanSummary loan={selectedLoan} />
     }
 
     bodyContent = (
-      <Stack gap={UiGap.Three}>
+      <Stack gap={UiGap.Four}>
         {errorAlert}
         {loanPicker}
+        {loanSummary}
       </Stack>
     )
   }

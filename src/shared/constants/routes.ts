@@ -12,4 +12,5 @@ export const AppRouteSegment = {
   Loans: 'loans',
 } as const
 
-export type AppRouteSegment = (typeof AppRouteSegment)[keyof typeof AppRouteSegment]
+export type AppRouteSegment =
+  (typeof AppRouteSegment)[keyof typeof AppRouteSegment]

@@ -1,8 +1,8 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { AppLayout } from '@/app/layout/AppLayout'
 import { BooksPage } from '@/books/pages/BooksPage'
-import { MembersPage } from '@/members/pages/MembersPage'
 import { LoansPage } from '@/loans/pages/LoansPage'
+import { MembersPage } from '@/members/pages/MembersPage'
 import { AppRoute, AppRouteSegment } from '@/shared/constants/routes'
 
 export default function App() {

@@ -1,5 +1,6 @@
 import type { Member } from '@/members/types/member'
 import { bookStrings } from '@/books/constants/strings'
+import { formatDateTime } from '@/shared/utils/formatDateTime'
 
 export const MemberLabelSeparator = {
   Space: ' ',
@@ -18,6 +19,10 @@ export function formatMemberLabel(member: Member): string {
   ].join('')
 }
 
+export function formatMemberName(member: Member): string {
+  return [member.firstName, MemberLabelSeparator.Space, member.lastName].join('')
+}
+
 export function formatLoanOptionLabel(loan: {
   member: Member
   loanedAt: string
@@ -25,6 +30,6 @@ export function formatLoanOptionLabel(loan: {
   return [
     formatMemberLabel(loan.member),
     bookStrings.loanedAtPrefix,
-    loan.loanedAt,
+    formatDateTime(loan.loanedAt),
   ].join('')
 }
