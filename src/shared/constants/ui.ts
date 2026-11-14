@@ -185,6 +185,7 @@ export type UiButtonColorPalette =
 export const UiInputType = {
   Text: 'text',
   Number: 'number',
+  Email: 'email',
 } as const
 
 export type UiInputType = (typeof UiInputType)[keyof typeof UiInputType]
@@ -299,7 +300,7 @@ export const UiBgToken = {
   AppPanelGlass: 'app.panelGlass',
   AppNavActive: 'app.navActive',
   Overlay: 'app.overlay',
-  TableHeader: 'brand.subtle',
+  TableHeader: 'brand.muted',
 } as const
 
 export type UiBgToken = (typeof UiBgToken)[keyof typeof UiBgToken]

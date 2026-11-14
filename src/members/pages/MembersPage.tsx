@@ -1,18 +1,236 @@
-import { Text } from '@chakra-ui/react'
+import { useMemo, useState } from 'react'
+import { Button, Flex, Spinner, Stack, Text } from '@chakra-ui/react'
+import { MemberCreateDialog } from '@/members/components/MemberCreateDialog'
+import { MemberDeleteDialog } from '@/members/components/MemberDeleteDialog'
+import { MemberDetailDrawer } from '@/members/components/MemberDetailDrawer'
+import { MemberEditDialog } from '@/members/components/MemberEditDialog'
+import { MembersSearchField } from '@/members/components/MembersSearchField'
+import { MembersTable } from '@/members/components/MembersTable'
+import {
+  MemberSortField,
+  type MemberSortField as MemberSortFieldValue,
+} from '@/members/constants/sort'
+import { MemberDialogKey, memberStrings } from '@/members/constants/strings'
+import { useMembersList } from '@/members/hooks/useMembersList'
+import type { Member } from '@/members/types/member'
+import { filterMembersBySearch } from '@/members/utils/filterMembersBySearch'
+import { sortMembers } from '@/members/utils/sortMembers'
 import { ResourcePage } from '@/shared/components/ResourcePage'
 import { SurfacePanel } from '@/shared/components/SurfacePanel'
-import { strings } from '@/shared/constants/strings'
-import { UiColor, UiSpace } from '@/shared/constants/ui'
+import {
+  UiButtonColorPalette,
+  UiColor,
+  UiFlexAlign,
+  UiFlexGrow,
+  UiFlexJustify,
+  UiFlexShrink,
+  UiFlexWrap,
+  UiGap,
+  UiMinWidth,
+  UiSortDirection,
+  UiSpace,
+  type UiSortDirection as UiSortDirectionValue,
+} from '@/shared/constants/ui'
+import { notifySuccess } from '@/shared/toast/notify'
 
 export function MembersPage() {
+  const [search, setSearch] = useState('')
+  const [sortField, setSortField] = useState<MemberSortFieldValue>(
+    MemberSortField.FirstName,
+  )
+  const [sortDirection, setSortDirection] = useState<UiSortDirectionValue>(
+    UiSortDirection.Asc,
+  )
+  const { members, error, loading, reload } = useMembersList()
+
+  const [createOpen, setCreateOpen] = useState(false)
+  const [editOpen, setEditOpen] = useState(false)
+  const [deleteOpen, setDeleteOpen] = useState(false)
+  const [detailOpen, setDetailOpen] = useState(false)
+  const [selectedMember, setSelectedMember] = useState<Member | null>(null)
+  const [detailMemberId, setDetailMemberId] = useState<string | null>(null)
+
+  const visibleMembers = useMemo(() => {
+    if (!members) {
+      return []
+    }
+
+    const filtered = filterMembersBySearch(members, search)
+    return sortMembers(filtered, sortField, sortDirection)
+  }, [members, search, sortField, sortDirection])
+
+  async function handleListChanged(successMessage: string) {
+    notifySuccess(memberStrings.toastSuccessTitle, successMessage)
+    await reload()
+  }
+
+  function handleSortChange(field: MemberSortFieldValue) {
+    if (field === sortField) {
+      if (sortDirection === UiSortDirection.Asc) {
+        setSortDirection(UiSortDirection.Desc)
+        return
+      }
+
+      setSortDirection(UiSortDirection.Asc)
+      return
+    }
+
+    setSortField(field)
+    setSortDirection(UiSortDirection.Asc)
+  }
+
+  const toolbar = (
+    <SurfacePanel padding={UiSpace.Five}>
+      <Flex
+        align={UiFlexAlign.End}
+        justify={UiFlexJustify.SpaceBetween}
+        gap={UiGap.Three}
+        wrap={UiFlexWrap.Wrap}
+      >
+        <Flex
+          gap={UiGap.Three}
+          align={UiFlexAlign.End}
+          flex={UiFlexGrow.One}
+          minW={UiMinWidth.None}
+        >
+          <MembersSearchField value={search} onChange={setSearch} />
+        </Flex>
+        <Button
+          colorPalette={UiButtonColorPalette.Brand}
+          flexShrink={UiFlexShrink.None}
+          onClick={() => {
+            setCreateOpen(true)
+          }}
+        >
+          {memberStrings.createButton}
+        </Button>
+      </Flex>
+    </SurfacePanel>
+  )
+
+  const dialogs = (
+    <>
+      <MemberCreateDialog
+        open={createOpen}
+        onOpenChange={setCreateOpen}
+        onCreated={() => handleListChanged(memberStrings.createSuccess)}
+      />
+      <MemberEditDialog
+        key={selectedMember ? selectedMember.id : MemberDialogKey.EditIdle}
+        open={editOpen}
+        member={selectedMember}
+        onOpenChange={setEditOpen}
+        onUpdated={() => handleListChanged(memberStrings.updateSuccess)}
+      />
+      <MemberDeleteDialog
+        open={deleteOpen}
+        member={selectedMember}
+        onOpenChange={setDeleteOpen}
+        onDeleted={() => handleListChanged(memberStrings.deleteSuccess)}
+      />
+      <MemberDetailDrawer
+        open={detailOpen}
+        memberId={detailMemberId}
+        onOpenChange={setDetailOpen}
+      />
+    </>
+  )
+
+  if (loading) {
+    return (
+      <ResourcePage
+        title={memberStrings.title}
+        description={memberStrings.description}
+      >
+        <Stack gap={UiGap.Four}>
+          {toolbar}
+          <SurfacePanel padding={UiSpace.Five}>
+            <Spinner />
+          </SurfacePanel>
+        </Stack>
+        {dialogs}
+      </ResourcePage>
+    )
+  }
+
+  if (error) {
+    return (
+      <ResourcePage
+        title={memberStrings.title}
+        description={memberStrings.description}
+      >
+        <Stack gap={UiGap.Four}>
+          {toolbar}
+          <SurfacePanel padding={UiSpace.Five}>
+            <Text color={UiColor.Error}>{error}</Text>
+          </SurfacePanel>
+        </Stack>
+        {dialogs}
+      </ResourcePage>
+    )
+  }
+
+  if (members === null || members.length === 0) {
+    return (
+      <ResourcePage
+        title={memberStrings.title}
+        description={memberStrings.description}
+      >
+        <Stack gap={UiGap.Four}>
+          {toolbar}
+          <SurfacePanel padding={UiSpace.Five}>
+            <Text color={UiColor.Muted}>{memberStrings.empty}</Text>
+          </SurfacePanel>
+        </Stack>
+        {dialogs}
+      </ResourcePage>
+    )
+  }
+
+  if (visibleMembers.length === 0) {
+    return (
+      <ResourcePage
+        title={memberStrings.title}
+        description={memberStrings.description}
+      >
+        <Stack gap={UiGap.Four}>
+          {toolbar}
+          <SurfacePanel padding={UiSpace.Five}>
+            <Text color={UiColor.Muted}>{memberStrings.emptySearch}</Text>
+          </SurfacePanel>
+        </Stack>
+        {dialogs}
+      </ResourcePage>
+    )
+  }
+
   return (
     <ResourcePage
-      title={strings.members.title}
-      description={strings.members.description}
+      title={memberStrings.title}
+      description={memberStrings.description}
     >
-      <SurfacePanel padding={UiSpace.Five}>
-        <Text color={UiColor.Muted}>{strings.members.placeholder}</Text>
-      </SurfacePanel>
+      <Stack gap={UiGap.Four}>
+        {toolbar}
+        <MembersTable
+          members={visibleMembers}
+          sortField={sortField}
+          sortDirection={sortDirection}
+          onSortChange={handleSortChange}
+          onRowOpen={(member) => {
+            setDetailMemberId(member.id)
+            setDetailOpen(true)
+          }}
+          onEdit={(member) => {
+            setSelectedMember(member)
+            setEditOpen(true)
+          }}
+          onDelete={(member) => {
+            setSelectedMember(member)
+            setDeleteOpen(true)
+          }}
+        />
+      </Stack>
+      {dialogs}
     </ResourcePage>
   )
 }

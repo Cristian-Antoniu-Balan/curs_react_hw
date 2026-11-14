@@ -1,9 +1,9 @@
-import { NavLink, Outlet } from 'react-router-dom'
-import { Box, Container, Flex, Heading, HStack, Stack } from '@chakra-ui/react'
-import backgroundImage from '@/assets/background.jpg'
-import { ColorModeButton } from '@/components/ui/color-mode'
-import { AppRoute } from '@/shared/constants/routes'
-import { strings } from '@/shared/constants/strings'
+import { NavLink, Outlet } from 'react-router-dom';
+import { Box, Container, Flex, Heading, HStack, Stack } from '@chakra-ui/react';
+import backgroundImage from '@/assets/background.jpg';
+import { ColorModeButton } from '@/components/ui/color-mode';
+import { AppRoute } from '@/shared/constants/routes';
+import { strings } from '@/shared/constants/strings';
 import {
   UiBackdropFilter,
   UiBgAttachment,
@@ -35,34 +35,31 @@ import {
   UiTransition,
   UiWidth,
   UiZIndex,
-} from '@/shared/constants/ui'
-import { toCssUrl } from '@/shared/utils/toCssUrl'
+} from '@/shared/constants/ui';
+import { toCssUrl } from '@/shared/utils/toCssUrl';
 
 type NavItemProps = {
-  to: string
-  label: string
-}
+  to: string;
+  label: string;
+};
 
 function NavItem({ to, label }: NavItemProps) {
   return (
-    <NavLink
-      to={to}
-      style={{ textDecoration: UiTextDecoration.None }}
-    >
+    <NavLink to={to} style={{ textDecoration: UiTextDecoration.None }}>
       {({ isActive }) => {
-        let bg: string = UiColor.Transparent
-        let color: string = UiColor.Muted
-        let fontWeight: UiFontWeight = UiFontWeight.Medium
+        let bg: string = UiColor.Transparent;
+        let color: string = UiColor.Muted;
+        let fontWeight: UiFontWeight = UiFontWeight.Medium;
 
         if (isActive) {
-          bg = UiBgToken.AppNavActive
-          color = UiColor.BrandFg
-          fontWeight = UiFontWeight.Semibold
+          bg = UiBgToken.AppNavActive;
+          color = UiColor.BrandFg;
+          fontWeight = UiFontWeight.Semibold;
         }
 
         return (
           <Box
-            as="span"
+            as='span'
             display={UiDisplay.InlineFlex}
             alignItems={UiFlexAlign.Center}
             px={UiSpace.Three}
@@ -75,10 +72,10 @@ function NavItem({ to, label }: NavItemProps) {
           >
             {label}
           </Box>
-        )
+        );
       }}
     </NavLink>
-  )
+  );
 }
 
 export function AppLayout() {
@@ -163,7 +160,7 @@ export function AppLayout() {
         </Container>
       </Stack>
     </Box>
-  )
+  );
 
-  return content
+  return content;
 }

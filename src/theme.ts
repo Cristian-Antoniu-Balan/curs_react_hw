@@ -1,16 +1,14 @@
-import { createSystem, defaultConfig, defineConfig } from '@chakra-ui/react'
+import { createSystem, defaultConfig, defineConfig } from '@chakra-ui/react';
 
 const config = defineConfig({
   theme: {
     tokens: {
       fonts: {
         heading: {
-          value:
-            '"Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif',
+          value: '"Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif',
         },
         body: {
-          value:
-            '"Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif',
+          value: '"Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif',
         },
       },
       colors: {
@@ -47,25 +45,40 @@ const config = defineConfig({
       colors: {
         brand: {
           solid: {
-            value: { _light: '{colors.brand.600}', _dark: '{colors.brand.400}' },
+            value: {
+              _light: '{colors.brand.600}',
+              _dark: '{colors.brand.400}',
+            },
           },
           contrast: {
             value: { _light: 'white', _dark: '{colors.brand.950}' },
           },
           fg: {
-            value: { _light: '{colors.brand.700}', _dark: '{colors.brand.300}' },
+            value: {
+              _light: '{colors.brand.700}',
+              _dark: '{colors.brand.300}',
+            },
           },
           muted: {
-            value: { _light: '{colors.brand.100}', _dark: '{colors.brand.900}' },
+            value: {
+              _light: '{colors.brand.100}',
+              _dark: '{colors.brand.900}',
+            },
           },
           subtle: {
             value: { _light: '{colors.brand.50}', _dark: '{colors.brand.950}' },
           },
           emphasized: {
-            value: { _light: '{colors.brand.200}', _dark: '{colors.brand.800}' },
+            value: {
+              _light: '{colors.brand.200}',
+              _dark: '{colors.brand.800}',
+            },
           },
           focusRing: {
-            value: { _light: '{colors.brand.500}', _dark: '{colors.brand.400}' },
+            value: {
+              _light: '{colors.brand.500}',
+              _dark: '{colors.brand.400}',
+            },
           },
         },
         fg: {
@@ -115,8 +128,8 @@ const config = defineConfig({
           },
           navActive: {
             value: {
-              _light: '{colors.brand.50}',
-              _dark: '{colors.brand.950}',
+              _light: '{colors.brand.100}',
+              _dark: '{colors.brand.900}',
             },
           },
           overlay: {
@@ -141,6 +154,6 @@ const config = defineConfig({
       color: 'fg.subtle',
     },
   },
-})
+});
 
-export const system = createSystem(defaultConfig, config)
+export const system = createSystem(defaultConfig, config);
