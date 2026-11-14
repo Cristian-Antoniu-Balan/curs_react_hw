@@ -40,6 +40,7 @@ type MemberDetailDrawerProps = {
   open: boolean
   memberId: string | null
   onOpenChange: (open: boolean) => void
+  onMemberChanged?: () => Promise<void> | void
 }
 
 type DetailRowProps = {
@@ -123,6 +124,7 @@ export function MemberDetailDrawer({
   open,
   memberId,
   onOpenChange,
+  onMemberChanged,
 }: MemberDetailDrawerProps) {
   const [member, setMember] = useState<Member | null>(null)
   const [activeLoans, setActiveLoans] = useState<Loan[]>([])
@@ -132,6 +134,34 @@ export function MemberDetailDrawer({
   const [loanDrawerOpen, setLoanDrawerOpen] = useState(false)
   const [loanDetailId, setLoanDetailId] = useState<string | null>(null)
 
+  async function loadDetail(id: string) {
+    setLoading(true)
+    setError(null)
+    setLoansError(null)
+    setMember(null)
+    setActiveLoans([])
+
+    try {
+      const result = await getMember(id)
+      setMember(result)
+    } catch (caught) {
+      setError(resolveErrorMessage(caught, memberStrings.detailLoadFailed))
+      setLoading(false)
+      return
+    }
+
+    try {
+      const loans = await listLoans(true)
+      setActiveLoans(loans.filter((loan) => loan.member.id === id))
+    } catch (caught) {
+      setLoansError(
+        resolveErrorMessage(caught, memberStrings.detailLoansLoadFailed),
+      )
+    } finally {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
     if (!open || !memberId) {
       return
@@ -139,7 +169,7 @@ export function MemberDetailDrawer({
 
     let cancelled = false
 
-    async function loadDetail(id: string) {
+    async function runLoad(id: string) {
       setLoading(true)
       setError(null)
       setLoansError(null)
@@ -177,7 +207,7 @@ export function MemberDetailDrawer({
       }
     }
 
-    void loadDetail(memberId)
+    void runLoad(memberId)
 
     return () => {
       cancelled = true
@@ -187,6 +217,15 @@ export function MemberDetailDrawer({
   function handleOpenLoan(loanId: string) {
     setLoanDetailId(loanId)
     setLoanDrawerOpen(true)
+  }
+
+  async function handleLoanChanged() {
+    if (memberId) {
+      await loadDetail(memberId)
+    }
+    if (onMemberChanged) {
+      await onMemberChanged()
+    }
   }
 
   let body = null
@@ -302,6 +341,7 @@ export function MemberDetailDrawer({
         open={loanDrawerOpen}
         loanId={loanDetailId}
         onOpenChange={setLoanDrawerOpen}
+        onLoanChanged={handleLoanChanged}
       />
     )
   }

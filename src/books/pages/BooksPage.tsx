@@ -164,6 +164,7 @@ export function BooksPage() {
         open={detailOpen}
         bookId={detailBookId}
         onOpenChange={setDetailOpen}
+        onBookChanged={reload}
       />
     </>
   )

@@ -158,6 +158,7 @@ export function MembersPage() {
         open={detailOpen}
         memberId={detailMemberId}
         onOpenChange={setDetailOpen}
+        onMemberChanged={reload}
       />
     </>
   )

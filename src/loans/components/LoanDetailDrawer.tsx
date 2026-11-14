@@ -201,14 +201,18 @@ export function LoanDetailDrawer({
     }
   }, [open, loanId])
 
-  async function handleReturned() {
-    notifySuccess(loanStrings.toastSuccessTitle, loanStrings.returnSuccess)
+  async function handleRelatedChanged() {
     if (loanId) {
       await loadDetail(loanId)
     }
     if (onLoanChanged) {
       await onLoanChanged()
     }
+  }
+
+  async function handleReturned() {
+    notifySuccess(loanStrings.toastSuccessTitle, loanStrings.returnSuccess)
+    await handleRelatedChanged()
   }
 
   let body = null
@@ -341,6 +345,7 @@ export function LoanDetailDrawer({
         open={bookDrawerOpen}
         bookId={bookDetailId}
         onOpenChange={setBookDrawerOpen}
+        onBookChanged={handleRelatedChanged}
       />
     )
   }
@@ -352,6 +357,7 @@ export function LoanDetailDrawer({
         open={memberDrawerOpen}
         memberId={memberDetailId}
         onOpenChange={setMemberDrawerOpen}
+        onMemberChanged={handleRelatedChanged}
       />
     )
   }

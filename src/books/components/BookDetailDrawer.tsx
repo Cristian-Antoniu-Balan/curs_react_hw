@@ -49,6 +49,7 @@ type BookDetailDrawerProps = {
   open: boolean
   bookId: string | null
   onOpenChange: (open: boolean) => void
+  onBookChanged?: () => Promise<void> | void
 }
 
 type DetailRowProps = {
@@ -155,6 +156,7 @@ export function BookDetailDrawer({
   open,
   bookId,
   onOpenChange,
+  onBookChanged,
 }: BookDetailDrawerProps) {
   const [book, setBook] = useState<Book | null>(null)
   const [activeLoans, setActiveLoans] = useState<Loan[]>([])
@@ -166,6 +168,34 @@ export function BookDetailDrawer({
   const [memberDrawerOpen, setMemberDrawerOpen] = useState(false)
   const [memberDetailId, setMemberDetailId] = useState<string | null>(null)
 
+  async function loadDetail(id: string) {
+    setLoading(true)
+    setError(null)
+    setLoansError(null)
+    setBook(null)
+    setActiveLoans([])
+
+    try {
+      const result = await getBook(id)
+      setBook(result)
+    } catch (caught) {
+      setError(resolveErrorMessage(caught, bookStrings.detailLoadFailed))
+      setLoading(false)
+      return
+    }
+
+    try {
+      const loans = await listLoans(true)
+      setActiveLoans(loans.filter((loan) => loan.book.id === id))
+    } catch (caught) {
+      setLoansError(
+        resolveErrorMessage(caught, bookStrings.detailLoansLoadFailed),
+      )
+    } finally {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
     if (!open || !bookId) {
       return
@@ -173,7 +203,7 @@ export function BookDetailDrawer({
 
     let cancelled = false
 
-    async function loadDetail(id: string) {
+    async function runLoad(id: string) {
       setLoading(true)
       setError(null)
       setLoansError(null)
@@ -211,7 +241,7 @@ export function BookDetailDrawer({
       }
     }
 
-    void loadDetail(bookId)
+    void runLoad(bookId)
 
     return () => {
       cancelled = true
@@ -226,6 +256,15 @@ export function BookDetailDrawer({
   function handleOpenMember(memberId: string) {
     setMemberDetailId(memberId)
     setMemberDrawerOpen(true)
+  }
+
+  async function handleLoanChanged() {
+    if (bookId) {
+      await loadDetail(bookId)
+    }
+    if (onBookChanged) {
+      await onBookChanged()
+    }
   }
 
   let body = null
@@ -346,6 +385,7 @@ export function BookDetailDrawer({
         open={loanDrawerOpen}
         loanId={loanDetailId}
         onOpenChange={setLoanDrawerOpen}
+        onLoanChanged={handleLoanChanged}
       />
     )
   }
@@ -357,6 +397,7 @@ export function BookDetailDrawer({
         open={memberDrawerOpen}
         memberId={memberDetailId}
         onOpenChange={setMemberDrawerOpen}
+        onMemberChanged={handleLoanChanged}
       />
     )
   }
