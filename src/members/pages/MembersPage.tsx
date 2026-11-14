@@ -4,8 +4,14 @@ import { MemberCreateDialog } from '@/members/components/MemberCreateDialog'
 import { MemberDeleteDialog } from '@/members/components/MemberDeleteDialog'
 import { MemberDetailDrawer } from '@/members/components/MemberDetailDrawer'
 import { MemberEditDialog } from '@/members/components/MemberEditDialog'
+import { MemberReturnDialog } from '@/members/components/MemberReturnDialog'
+import { MembersActiveLoansFilter } from '@/members/components/MembersActiveLoansFilter'
 import { MembersSearchField } from '@/members/components/MembersSearchField'
 import { MembersTable } from '@/members/components/MembersTable'
+import {
+  MemberActiveLoansFilter,
+  type MemberActiveLoansFilter as MemberActiveLoansFilterValue,
+} from '@/members/constants/activeLoansFilter'
 import {
   MemberSortField,
   type MemberSortField as MemberSortFieldValue,
@@ -13,6 +19,7 @@ import {
 import { MemberDialogKey, memberStrings } from '@/members/constants/strings'
 import { useMembersList } from '@/members/hooks/useMembersList'
 import type { Member } from '@/members/types/member'
+import { filterMembersByActiveLoans } from '@/members/utils/filterMembersByActiveLoans'
 import { filterMembersBySearch } from '@/members/utils/filterMembersBySearch'
 import { sortMembers } from '@/members/utils/sortMembers'
 import { ResourcePage } from '@/shared/components/ResourcePage'
@@ -35,6 +42,8 @@ import { notifySuccess } from '@/shared/toast/notify'
 
 export function MembersPage() {
   const [search, setSearch] = useState('')
+  const [activeLoansFilter, setActiveLoansFilter] =
+    useState<MemberActiveLoansFilterValue>(MemberActiveLoansFilter.All)
   const [sortField, setSortField] = useState<MemberSortFieldValue>(
     MemberSortField.FirstName,
   )
@@ -45,6 +54,7 @@ export function MembersPage() {
 
   const [createOpen, setCreateOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
+  const [returnOpen, setReturnOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [detailOpen, setDetailOpen] = useState(false)
   const [selectedMember, setSelectedMember] = useState<Member | null>(null)
@@ -55,9 +65,10 @@ export function MembersPage() {
       return []
     }
 
-    const filtered = filterMembersBySearch(members, search)
+    const byLoans = filterMembersByActiveLoans(members, activeLoansFilter)
+    const filtered = filterMembersBySearch(byLoans, search)
     return sortMembers(filtered, sortField, sortDirection)
-  }, [members, search, sortField, sortDirection])
+  }, [members, activeLoansFilter, search, sortField, sortDirection])
 
   async function handleListChanged(successMessage: string) {
     notifySuccess(memberStrings.toastSuccessTitle, successMessage)
@@ -94,6 +105,10 @@ export function MembersPage() {
           minW={UiMinWidth.None}
         >
           <MembersSearchField value={search} onChange={setSearch} />
+          <MembersActiveLoansFilter
+            value={activeLoansFilter}
+            onChange={setActiveLoansFilter}
+          />
         </Flex>
         <Button
           colorPalette={UiButtonColorPalette.Brand}
@@ -121,6 +136,17 @@ export function MembersPage() {
         member={selectedMember}
         onOpenChange={setEditOpen}
         onUpdated={() => handleListChanged(memberStrings.updateSuccess)}
+      />
+      <MemberReturnDialog
+        key={
+          selectedMember
+            ? `${selectedMember.id}${MemberDialogKey.ReturnSuffix}`
+            : MemberDialogKey.ReturnIdle
+        }
+        open={returnOpen}
+        member={selectedMember}
+        onOpenChange={setReturnOpen}
+        onReturned={() => handleListChanged(memberStrings.returnSuccess)}
       />
       <MemberDeleteDialog
         open={deleteOpen}
@@ -223,6 +249,10 @@ export function MembersPage() {
           onEdit={(member) => {
             setSelectedMember(member)
             setEditOpen(true)
+          }}
+          onReturn={(member) => {
+            setSelectedMember(member)
+            setReturnOpen(true)
           }}
           onDelete={(member) => {
             setSelectedMember(member)

@@ -1,15 +1,15 @@
-import { Badge, Box, IconButton, Menu, Portal, Table } from '@chakra-ui/react';
-import { LuEllipsis } from 'react-icons/lu';
+import { Badge, Box, IconButton, Menu, Portal, Table } from '@chakra-ui/react'
+import { LuEllipsis } from 'react-icons/lu'
 import {
   BookMenuAction,
   BookSortField,
   type BookSortField as BookSortFieldValue,
-} from '@/books/constants/sort';
-import { bookStrings } from '@/books/constants/strings';
-import type { Book } from '@/books/types/book';
-import { availabilityBadgePalette } from '@/books/utils/availabilityBadgePalette';
-import { availabilityLabel } from '@/books/utils/availabilityLabel';
-import { SurfacePanel } from '@/shared/components/SurfacePanel';
+} from '@/books/constants/sort'
+import { bookStrings } from '@/books/constants/strings'
+import type { Book } from '@/books/types/book'
+import { availabilityBadgePalette } from '@/books/utils/availabilityBadgePalette'
+import { availabilityLabel } from '@/books/utils/availabilityLabel'
+import { SurfacePanel } from '@/shared/components/SurfacePanel'
 import {
   UiBadgeVariant,
   UiBgToken,
@@ -29,42 +29,40 @@ import {
   UiWhiteSpace,
   UiWidth,
   type UiSortDirection as UiSortDirectionValue,
-} from '@/shared/constants/ui';
+} from '@/shared/constants/ui'
 
 type BooksTableProps = {
-  books: Book[];
-  bookIdsWithActiveLoans: ReadonlySet<string>;
-  sortField: BookSortFieldValue;
-  sortDirection: UiSortDirectionValue;
-  onSortChange: (field: BookSortFieldValue) => void;
-  onRowOpen: (book: Book) => void;
-  onEdit: (book: Book) => void;
-  onAdjustCopies: (book: Book) => void;
-  onLoan: (book: Book) => void;
-  onReturn: (book: Book) => void;
-  onDelete: (book: Book) => void;
-};
+  books: Book[]
+  sortField: BookSortFieldValue
+  sortDirection: UiSortDirectionValue
+  onSortChange: (field: BookSortFieldValue) => void
+  onRowOpen: (book: Book) => void
+  onEdit: (book: Book) => void
+  onAdjustCopies: (book: Book) => void
+  onLoan: (book: Book) => void
+  onDelete: (book: Book) => void
+}
 
 type SortMarkProps = {
-  field: BookSortFieldValue;
-  sortField: BookSortFieldValue;
-  sortDirection: UiSortDirectionValue;
-};
+  field: BookSortFieldValue
+  sortField: BookSortFieldValue
+  sortDirection: UiSortDirectionValue
+}
 
 function SortMark({ field, sortField, sortDirection }: SortMarkProps) {
-  let symbol: string = UiSortIndicator.Asc;
-  let visibility: UiVisibility = UiVisibility.Hidden;
+  let symbol: string = UiSortIndicator.Asc
+  let visibility: UiVisibility = UiVisibility.Hidden
 
   if (field === sortField) {
-    visibility = UiVisibility.Visible;
+    visibility = UiVisibility.Visible
     if (sortDirection === UiSortDirection.Desc) {
-      symbol = UiSortIndicator.Desc;
+      symbol = UiSortIndicator.Desc
     }
   }
 
   return (
     <Box
-      as='span'
+      as="span"
       display={UiDisplay.InlineFlex}
       w={UiWidth.SortIndicator}
       justifyContent={UiFlexJustify.Center}
@@ -75,12 +73,11 @@ function SortMark({ field, sortField, sortDirection }: SortMarkProps) {
     >
       {symbol}
     </Box>
-  );
+  )
 }
 
 export function BooksTable({
   books,
-  bookIdsWithActiveLoans,
   sortField,
   sortDirection,
   onSortChange,
@@ -88,7 +85,6 @@ export function BooksTable({
   onEdit,
   onAdjustCopies,
   onLoan,
-  onReturn,
   onDelete,
 }: BooksTableProps) {
   return (
@@ -102,7 +98,7 @@ export function BooksTable({
                 fontWeight={UiFontWeight.Semibold}
                 whiteSpace={UiWhiteSpace.NoWrap}
                 onClick={() => {
-                  onSortChange(BookSortField.Title);
+                  onSortChange(BookSortField.Title)
                 }}
               >
                 {bookStrings.columnTitle}
@@ -117,7 +113,7 @@ export function BooksTable({
                 fontWeight={UiFontWeight.Semibold}
                 whiteSpace={UiWhiteSpace.NoWrap}
                 onClick={() => {
-                  onSortChange(BookSortField.Author);
+                  onSortChange(BookSortField.Author)
                 }}
               >
                 {bookStrings.columnAuthor}
@@ -132,7 +128,7 @@ export function BooksTable({
                 fontWeight={UiFontWeight.Semibold}
                 whiteSpace={UiWhiteSpace.NoWrap}
                 onClick={() => {
-                  onSortChange(BookSortField.Copies);
+                  onSortChange(BookSortField.Copies)
                 }}
               >
                 {bookStrings.columnCopies}
@@ -152,8 +148,7 @@ export function BooksTable({
           </Table.Header>
           <Table.Body>
             {books.map((book) => {
-              const canLoan = book.isAvailable;
-              const canReturn = bookIdsWithActiveLoans.has(book.id);
+              const canLoan = book.isAvailable
 
               return (
                 <Table.Row
@@ -165,7 +160,7 @@ export function BooksTable({
                     },
                   }}
                   onClick={() => {
-                    onRowOpen(book);
+                    onRowOpen(book)
                   }}
                 >
                   <Table.Cell fontWeight={UiFontWeight.Medium}>
@@ -184,39 +179,31 @@ export function BooksTable({
                   </Table.Cell>
                   <Table.Cell
                     onClick={(event) => {
-                      event.stopPropagation();
+                      event.stopPropagation()
                     }}
                   >
                     <Menu.Root
                       onSelect={(details) => {
                         if (details.value === BookMenuAction.Edit) {
-                          onEdit(book);
-                          return;
+                          onEdit(book)
+                          return
                         }
 
                         if (details.value === BookMenuAction.AdjustCopies) {
-                          onAdjustCopies(book);
-                          return;
+                          onAdjustCopies(book)
+                          return
                         }
 
                         if (details.value === BookMenuAction.Loan) {
                           if (!canLoan) {
-                            return;
+                            return
                           }
-                          onLoan(book);
-                          return;
-                        }
-
-                        if (details.value === BookMenuAction.Return) {
-                          if (!canReturn) {
-                            return;
-                          }
-                          onReturn(book);
-                          return;
+                          onLoan(book)
+                          return
                         }
 
                         if (details.value === BookMenuAction.Delete) {
-                          onDelete(book);
+                          onDelete(book)
                         }
                       }}
                     >
@@ -244,12 +231,6 @@ export function BooksTable({
                             >
                               {bookStrings.loanButton}
                             </Menu.Item>
-                            <Menu.Item
-                              value={BookMenuAction.Return}
-                              disabled={!canReturn}
-                            >
-                              {bookStrings.returnButton}
-                            </Menu.Item>
                             <Menu.Separator />
                             <Menu.Item value={BookMenuAction.Delete}>
                               {bookStrings.deleteButton}
@@ -260,11 +241,11 @@ export function BooksTable({
                     </Menu.Root>
                   </Table.Cell>
                 </Table.Row>
-              );
+              )
             })}
           </Table.Body>
         </Table.Root>
       </Table.ScrollArea>
     </SurfacePanel>
-  );
+  )
 }

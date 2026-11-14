@@ -12,6 +12,10 @@ function compareText(left: string, right: string): number {
   return left.localeCompare(right, undefined, { sensitivity: 'base' })
 }
 
+function compareNumber(left: number, right: number): number {
+  return left - right
+}
+
 export function sortMembers(
   members: Member[],
   field: MemberSortFieldValue,
@@ -28,6 +32,10 @@ export function sortMembers(
 
     if (field === MemberSortField.Email) {
       return compareText(left.email, right.email)
+    }
+
+    if (field === MemberSortField.ActiveLoans) {
+      return compareNumber(left.activeLoans, right.activeLoans)
     }
 
     return 0

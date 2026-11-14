@@ -34,6 +34,7 @@ type MembersTableProps = {
   onSortChange: (field: MemberSortFieldValue) => void
   onRowOpen: (member: Member) => void
   onEdit: (member: Member) => void
+  onReturn: (member: Member) => void
   onDelete: (member: Member) => void
 }
 
@@ -77,6 +78,7 @@ export function MembersTable({
   onSortChange,
   onRowOpen,
   onEdit,
+  onReturn,
   onDelete,
 }: MembersTableProps) {
   return (
@@ -130,73 +132,107 @@ export function MembersTable({
                   sortDirection={sortDirection}
                 />
               </Table.ColumnHeader>
+              <Table.ColumnHeader
+                cursor={UiCursor.Pointer}
+                fontWeight={UiFontWeight.Semibold}
+                whiteSpace={UiWhiteSpace.NoWrap}
+                onClick={() => {
+                  onSortChange(MemberSortField.ActiveLoans)
+                }}
+              >
+                {memberStrings.columnActiveLoans}
+                <SortMark
+                  field={MemberSortField.ActiveLoans}
+                  sortField={sortField}
+                  sortDirection={sortDirection}
+                />
+              </Table.ColumnHeader>
               <Table.ColumnHeader fontWeight={UiFontWeight.Semibold}>
                 {memberStrings.columnActions}
               </Table.ColumnHeader>
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {members.map((member) => (
-              <Table.Row
-                key={member.id}
-                cursor={UiCursor.Pointer}
-                _hover={{
-                  '& td': {
-                    bg: UiBgToken.RowHoverCell,
-                  },
-                }}
-                onClick={() => {
-                  onRowOpen(member)
-                }}
-              >
-                <Table.Cell fontWeight={UiFontWeight.Medium}>
-                  {member.firstName}
-                </Table.Cell>
-                <Table.Cell>{member.lastName}</Table.Cell>
-                <Table.Cell>{member.email}</Table.Cell>
-                <Table.Cell
-                  onClick={(event) => {
-                    event.stopPropagation()
+            {members.map((member) => {
+              const canReturn = member.activeLoans > 0
+
+              return (
+                <Table.Row
+                  key={member.id}
+                  cursor={UiCursor.Pointer}
+                  _hover={{
+                    '& td': {
+                      bg: UiBgToken.RowHoverCell,
+                    },
+                  }}
+                  onClick={() => {
+                    onRowOpen(member)
                   }}
                 >
-                  <Menu.Root
-                    onSelect={(details) => {
-                      if (details.value === MemberMenuAction.Edit) {
-                        onEdit(member)
-                        return
-                      }
-
-                      if (details.value === MemberMenuAction.Delete) {
-                        onDelete(member)
-                      }
+                  <Table.Cell fontWeight={UiFontWeight.Medium}>
+                    {member.firstName}
+                  </Table.Cell>
+                  <Table.Cell>{member.lastName}</Table.Cell>
+                  <Table.Cell>{member.email}</Table.Cell>
+                  <Table.Cell>{member.activeLoans}</Table.Cell>
+                  <Table.Cell
+                    onClick={(event) => {
+                      event.stopPropagation()
                     }}
                   >
-                    <Menu.Trigger asChild>
-                      <IconButton
-                        aria-label={memberStrings.actionsMenuAria}
-                        size={UiButtonSize.Sm}
-                        variant={UiButtonVariant.Ghost}
-                      >
-                        <LuEllipsis />
-                      </IconButton>
-                    </Menu.Trigger>
-                    <Portal>
-                      <Menu.Positioner>
-                        <Menu.Content>
-                          <Menu.Item value={MemberMenuAction.Edit}>
-                            {memberStrings.editButton}
-                          </Menu.Item>
-                          <Menu.Separator />
-                          <Menu.Item value={MemberMenuAction.Delete}>
-                            {memberStrings.deleteButton}
-                          </Menu.Item>
-                        </Menu.Content>
-                      </Menu.Positioner>
-                    </Portal>
-                  </Menu.Root>
-                </Table.Cell>
-              </Table.Row>
-            ))}
+                    <Menu.Root
+                      onSelect={(details) => {
+                        if (details.value === MemberMenuAction.Edit) {
+                          onEdit(member)
+                          return
+                        }
+
+                        if (details.value === MemberMenuAction.Return) {
+                          if (!canReturn) {
+                            return
+                          }
+                          onReturn(member)
+                          return
+                        }
+
+                        if (details.value === MemberMenuAction.Delete) {
+                          onDelete(member)
+                        }
+                      }}
+                    >
+                      <Menu.Trigger asChild>
+                        <IconButton
+                          aria-label={memberStrings.actionsMenuAria}
+                          size={UiButtonSize.Sm}
+                          variant={UiButtonVariant.Ghost}
+                        >
+                          <LuEllipsis />
+                        </IconButton>
+                      </Menu.Trigger>
+                      <Portal>
+                        <Menu.Positioner>
+                          <Menu.Content>
+                            <Menu.Item value={MemberMenuAction.Edit}>
+                              {memberStrings.editButton}
+                            </Menu.Item>
+                            <Menu.Item
+                              value={MemberMenuAction.Return}
+                              disabled={!canReturn}
+                            >
+                              {memberStrings.returnButton}
+                            </Menu.Item>
+                            <Menu.Separator />
+                            <Menu.Item value={MemberMenuAction.Delete}>
+                              {memberStrings.deleteButton}
+                            </Menu.Item>
+                          </Menu.Content>
+                        </Menu.Positioner>
+                      </Portal>
+                    </Menu.Root>
+                  </Table.Cell>
+                </Table.Row>
+              )
+            })}
           </Table.Body>
         </Table.Root>
       </Table.ScrollArea>

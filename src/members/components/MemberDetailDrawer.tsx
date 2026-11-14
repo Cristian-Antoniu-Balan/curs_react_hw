@@ -281,6 +281,10 @@ export function MemberDetailDrawer({
           value={member.lastName}
         />
         <DetailRow label={memberStrings.fieldEmail} value={member.email} />
+        <DetailRow
+          label={memberStrings.fieldActiveLoans}
+          value={String(member.activeLoans)}
+        />
         <DetailRow label={memberStrings.fieldId} value={member.id} />
         {loansSection}
       </Stack>

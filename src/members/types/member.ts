@@ -3,6 +3,7 @@ export type Member = {
   firstName: string
   lastName: string
   email: string
+  activeLoans: number
 }
 
 export type MemberRequest = {

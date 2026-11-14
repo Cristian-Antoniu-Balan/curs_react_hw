@@ -11,14 +11,11 @@ import {
 } from '@chakra-ui/react'
 import { listLoans, returnLoan } from '@/loans/api/loansApi'
 import type { Loan } from '@/loans/types/loan'
-import { BookSelectEmptyValue } from '@/books/constants/sort'
-import { bookStrings } from '@/books/constants/strings'
-import type { Book } from '@/books/types/book'
-import {
-  formatLoanOptionLabel,
-  formatMemberName,
-} from '@/books/utils/formatMemberLabel'
-import { resolveErrorMessage } from '@/books/utils/resolveErrorMessage'
+import { MemberSelectEmptyValue } from '@/members/constants/sort'
+import { memberStrings } from '@/members/constants/strings'
+import type { Member } from '@/members/types/member'
+import { formatLoanBookOptionLabel } from '@/members/utils/formatLoanBookLabel'
+import { resolveErrorMessage } from '@/members/utils/resolveErrorMessage'
 import { AppDialogShell } from '@/shared/components/AppDialogShell'
 import {
   UiAlertStatus,
@@ -40,9 +37,9 @@ import {
 } from '@/shared/constants/ui'
 import { formatDateTime } from '@/shared/utils/formatDateTime'
 
-type BookReturnDialogProps = {
+type MemberReturnDialogProps = {
   open: boolean
-  book: Book | null
+  member: Member | null
   onOpenChange: (open: boolean) => void
   onReturned: () => Promise<void> | void
 }
@@ -91,65 +88,88 @@ function LoanSummary({ loan }: LoanSummaryProps) {
       px={UiSpace.Four}
     >
       <SummaryRow
-        label={bookStrings.returnMemberLabel}
-        value={formatMemberName(loan.member)}
+        label={memberStrings.returnBookLabel}
+        value={loan.book.title}
       />
       <SummaryRow
-        label={bookStrings.returnEmailLabel}
-        value={loan.member.email}
+        label={memberStrings.returnAuthorLabel}
+        value={loan.book.author}
       />
       <SummaryRow
-        label={bookStrings.returnLoanedAtLabel}
+        label={memberStrings.returnLoanedAtLabel}
         value={formatDateTime(loan.loanedAt)}
       />
     </Box>
   )
 }
 
-export function BookReturnDialog({
+export function MemberReturnDialog({
   open,
-  book,
+  member,
   onOpenChange,
   onReturned,
-}: BookReturnDialogProps) {
+}: MemberReturnDialogProps) {
   const [loans, setLoans] = useState<Loan[]>([])
-  const [loanId, setLoanId] = useState<string>(BookSelectEmptyValue.None)
+  const [loanId, setLoanId] = useState<string>(MemberSelectEmptyValue.None)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loadingLoans, setLoadingLoans] = useState(false)
+  const [hasFetchedLoans, setHasFetchedLoans] = useState(false)
   const [submitting, setSubmitting] = useState(false)
 
+  function resetLocalState() {
+    setError(null)
+    setLoadError(null)
+    setLoanId(MemberSelectEmptyValue.None)
+    setLoans([])
+    setLoadingLoans(false)
+    setHasFetchedLoans(false)
+    setSubmitting(false)
+  }
+
+  function handleOpenChange(nextOpen: boolean) {
+    if (!nextOpen) {
+      resetLocalState()
+    }
+    onOpenChange(nextOpen)
+  }
+
   useEffect(() => {
-    if (!open || !book) {
+    if (!open || !member) {
       return
     }
 
     let cancelled = false
-    const bookId = book.id
+    const memberId = member.id
 
     async function loadActiveLoans() {
       setLoadingLoans(true)
+      setHasFetchedLoans(false)
       setLoadError(null)
       setError(null)
-      setLoanId(BookSelectEmptyValue.None)
+      setLoanId(MemberSelectEmptyValue.None)
+      setLoans([])
 
       try {
         const activeLoans = await listLoans(true)
-        const forBook = activeLoans.filter((loan) => loan.book.id === bookId)
+        const forMember = activeLoans.filter(
+          (loan) => loan.member.id === memberId,
+        )
         if (!cancelled) {
-          setLoans(forBook)
-          if (forBook.length === 1) {
-            setLoanId(forBook[0].id)
+          setLoans(forMember)
+          if (forMember.length === 1) {
+            setLoanId(forMember[0].id)
           }
         }
       } catch (caught) {
         if (!cancelled) {
-          setLoadError(resolveErrorMessage(caught, bookStrings.returnFailed))
+          setLoadError(resolveErrorMessage(caught, memberStrings.returnFailed))
           setLoans([])
         }
       } finally {
         if (!cancelled) {
           setLoadingLoans(false)
+          setHasFetchedLoans(true)
         }
       }
     }
@@ -159,7 +179,7 @@ export function BookReturnDialog({
     return () => {
       cancelled = true
     }
-  }, [open, book])
+  }, [open, member])
 
   async function handleSubmit() {
     if (loanId.length === 0) {
@@ -171,10 +191,10 @@ export function BookReturnDialog({
 
     try {
       await returnLoan(loanId)
-      onOpenChange(false)
+      handleOpenChange(false)
       await onReturned()
     } catch (caught) {
-      setError(resolveErrorMessage(caught, bookStrings.returnFailed))
+      setError(resolveErrorMessage(caught, memberStrings.returnFailed))
     } finally {
       setSubmitting(false)
     }
@@ -184,11 +204,11 @@ export function BookReturnDialog({
 
   let bodyContent = null
 
-  if (loadingLoans) {
+  if (loadingLoans || !hasFetchedLoans) {
     bodyContent = <Spinner />
   }
 
-  if (!loadingLoans && loadError) {
+  if (hasFetchedLoans && !loadingLoans && loadError) {
     bodyContent = (
       <Alert.Root status={UiAlertStatus.Error}>
         <Alert.Indicator />
@@ -199,13 +219,13 @@ export function BookReturnDialog({
     )
   }
 
-  if (!loadingLoans && !loadError && loans.length === 0) {
+  if (hasFetchedLoans && !loadingLoans && !loadError && loans.length === 0) {
     bodyContent = (
-      <Text color={UiColor.Muted}>{bookStrings.noActiveLoan}</Text>
+      <Text color={UiColor.Muted}>{memberStrings.noActiveLoan}</Text>
     )
   }
 
-  if (!loadingLoans && !loadError && loans.length > 0) {
+  if (hasFetchedLoans && !loadingLoans && !loadError && loans.length > 0) {
     let errorAlert = null
     if (error) {
       errorAlert = (
@@ -222,7 +242,7 @@ export function BookReturnDialog({
     if (loans.length > 1) {
       loanPicker = (
         <Field.Root>
-          <Field.Label>{bookStrings.returnLoanLabel}</Field.Label>
+          <Field.Label>{memberStrings.returnLoanLabel}</Field.Label>
           <NativeSelect.Root
             size={UiNativeSelectSize.Md}
             w={UiWidth.Full}
@@ -234,12 +254,12 @@ export function BookReturnDialog({
                 setLoanId(event.target.value)
               }}
             >
-              <option value={BookSelectEmptyValue.None}>
-                {bookStrings.returnLoanPlaceholder}
+              <option value={MemberSelectEmptyValue.None}>
+                {memberStrings.returnLoanPlaceholder}
               </option>
               {loans.map((loan) => (
                 <option key={loan.id} value={loan.id}>
-                  {formatLoanOptionLabel(loan)}
+                  {formatLoanBookOptionLabel(loan)}
                 </option>
               ))}
             </NativeSelect.Field>
@@ -266,15 +286,8 @@ export function BookReturnDialog({
   return (
     <AppDialogShell
       open={open}
-      title={bookStrings.returnDialogTitle}
-      onOpenChange={(nextOpen) => {
-        if (!nextOpen) {
-          setError(null)
-          setLoadError(null)
-          setLoanId(BookSelectEmptyValue.None)
-        }
-        onOpenChange(nextOpen)
-      }}
+      title={memberStrings.returnDialogTitle}
+      onOpenChange={handleOpenChange}
       body={bodyContent}
       footer={
         <>
@@ -282,20 +295,20 @@ export function BookReturnDialog({
             variant={UiButtonVariant.Outline}
             disabled={submitting}
             onClick={() => {
-              onOpenChange(false)
+              handleOpenChange(false)
             }}
           >
-            {bookStrings.cancelButton}
+            {memberStrings.cancelButton}
           </Button>
           <Button
             colorPalette={UiButtonColorPalette.Brand}
             loading={submitting}
-            disabled={loadingLoans || loanId.length === 0}
+            disabled={loadingLoans || !hasFetchedLoans || loanId.length === 0}
             onClick={() => {
               void handleSubmit()
             }}
           >
-            {bookStrings.confirmReturnButton}
+            {memberStrings.confirmReturnButton}
           </Button>
         </>
       }

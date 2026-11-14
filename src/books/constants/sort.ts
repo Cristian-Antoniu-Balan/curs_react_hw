@@ -10,7 +10,6 @@ export const BookMenuAction = {
   Edit: 'edit',
   AdjustCopies: 'adjust-copies',
   Loan: 'loan',
-  Return: 'return',
   Delete: 'delete',
 } as const
 

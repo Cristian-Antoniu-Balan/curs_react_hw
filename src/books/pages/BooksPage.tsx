@@ -6,7 +6,6 @@ import { BookDeleteDialog } from '@/books/components/BookDeleteDialog'
 import { BookDetailDrawer } from '@/books/components/BookDetailDrawer'
 import { BookEditDialog } from '@/books/components/BookEditDialog'
 import { BookLoanDialog } from '@/books/components/BookLoanDialog'
-import { BookReturnDialog } from '@/books/components/BookReturnDialog'
 import { BooksAvailabilityFilter } from '@/books/components/BooksAvailabilityFilter'
 import { BooksSearchField } from '@/books/components/BooksSearchField'
 import { BooksTable } from '@/books/components/BooksTable'
@@ -16,7 +15,6 @@ import {
 } from '@/books/constants/availabilityFilter'
 import { BookSortField, type BookSortField as BookSortFieldValue } from '@/books/constants/sort'
 import { BookDialogKey, bookStrings } from '@/books/constants/strings'
-import { useActiveLoanBookIds } from '@/books/hooks/useActiveLoanBookIds'
 import { useBooksList } from '@/books/hooks/useBooksList'
 import type { Book } from '@/books/types/book'
 import { filterBooksBySearch } from '@/books/utils/filterBooksBySearch'
@@ -51,15 +49,12 @@ export function BooksPage() {
     UiSortDirection.Asc,
   )
   const { books, error, loading, reload } = useBooksList(filter)
-  const { bookIdsWithActiveLoans, reloadActiveLoanBookIds } =
-    useActiveLoanBookIds()
 
   const [createOpen, setCreateOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
   const [adjustOpen, setAdjustOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [loanOpen, setLoanOpen] = useState(false)
-  const [returnOpen, setReturnOpen] = useState(false)
   const [detailOpen, setDetailOpen] = useState(false)
   const [selectedBook, setSelectedBook] = useState<Book | null>(null)
   const [detailBookId, setDetailBookId] = useState<string | null>(null)
@@ -75,7 +70,7 @@ export function BooksPage() {
 
   async function handleListChanged(successMessage: string) {
     notifySuccess(bookStrings.toastSuccessTitle, successMessage)
-    await Promise.all([reload(), reloadActiveLoanBookIds()])
+    await reload()
   }
 
   function handleSortChange(field: BookSortFieldValue) {
@@ -165,17 +160,6 @@ export function BooksPage() {
         onOpenChange={setLoanOpen}
         onLoaned={() => handleListChanged(bookStrings.loanSuccess)}
       />
-      <BookReturnDialog
-        key={
-          selectedBook
-            ? `${selectedBook.id}${BookDialogKey.ReturnSuffix}`
-            : BookDialogKey.ReturnIdle
-        }
-        open={returnOpen}
-        book={selectedBook}
-        onOpenChange={setReturnOpen}
-        onReturned={() => handleListChanged(bookStrings.returnSuccess)}
-      />
       <BookDetailDrawer
         open={detailOpen}
         bookId={detailBookId}
@@ -261,7 +245,6 @@ export function BooksPage() {
         {toolbar}
         <BooksTable
           books={visibleBooks}
-          bookIdsWithActiveLoans={bookIdsWithActiveLoans}
           sortField={sortField}
           sortDirection={sortDirection}
           onSortChange={handleSortChange}
@@ -280,10 +263,6 @@ export function BooksPage() {
           onLoan={(book) => {
             setSelectedBook(book)
             setLoanOpen(true)
-          }}
-          onReturn={(book) => {
-            setSelectedBook(book)
-            setReturnOpen(true)
           }}
           onDelete={(book) => {
             setSelectedBook(book)
