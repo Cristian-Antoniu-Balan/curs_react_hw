@@ -46,7 +46,6 @@ export const loanStrings = {
   fieldStatus: 'Status',
   fieldLoanedAt: 'Loaned at',
   fieldReturnedAt: 'Returned at',
-  fieldId: 'ID',
   notReturned: 'Not returned',
   statusActive: 'Active',
   statusReturned: 'Returned',

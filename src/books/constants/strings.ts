@@ -51,7 +51,6 @@ export const bookStrings = {
   fieldTitle: 'Title',
   fieldAuthor: 'Author',
   fieldCopies: 'Copies',
-  fieldId: 'ID',
   fieldAvailability: 'Availability',
   available: 'Available',
   unavailable: 'Unavailable',

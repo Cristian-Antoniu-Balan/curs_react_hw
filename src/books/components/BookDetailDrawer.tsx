@@ -327,7 +327,6 @@ export function BookDetailDrawer({
           label={bookStrings.fieldCopies}
           value={String(book.copies)}
         />
-        <DetailRow label={bookStrings.fieldId} value={book.id} />
         {loansSection}
       </Stack>
     )

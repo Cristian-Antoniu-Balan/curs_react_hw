@@ -220,7 +220,6 @@ export function LoanDetailDrawer({
           label={loanStrings.fieldReturnedAt}
           value={returnedAtValue}
         />
-        <DetailRow label={loanStrings.fieldId} value={loan.id} />
         {returnAction}
       </Stack>
     )

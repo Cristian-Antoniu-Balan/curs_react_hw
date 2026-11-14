@@ -50,7 +50,6 @@ export const memberStrings = {
   fieldLastName: 'Last name',
   fieldEmail: 'Email',
   fieldActiveLoans: 'Active loans',
-  fieldId: 'ID',
   columnFirstName: 'First name',
   columnLastName: 'Last name',
   columnEmail: 'Email',

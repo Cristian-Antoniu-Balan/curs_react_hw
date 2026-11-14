@@ -283,7 +283,6 @@ export function MemberDetailDrawer({
           label={memberStrings.fieldActiveLoans}
           value={String(member.activeLoans)}
         />
-        <DetailRow label={memberStrings.fieldId} value={member.id} />
         {loansSection}
       </Stack>
     )
