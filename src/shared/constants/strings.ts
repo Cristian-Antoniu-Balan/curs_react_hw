@@ -7,11 +7,6 @@ export const strings = {
     members: 'Members',
     loans: 'Loans',
   },
-  loans: {
-    title: 'Loans',
-    description: 'Track active and returned book loans.',
-    placeholder: 'Loans UI will be added next.',
-  },
   drawer: {
     back: 'Back',
     backAria: 'Go back',

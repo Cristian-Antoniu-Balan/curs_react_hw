@@ -295,6 +295,17 @@ export function MemberDetailDrawer({
     body = <Text color={UiColor.Muted}>{memberStrings.detailLoadFailed}</Text>
   }
 
+  let nestedLoanDrawer = null
+  if (loanDrawerOpen) {
+    nestedLoanDrawer = (
+      <LoanDetailDrawer
+        open={loanDrawerOpen}
+        loanId={loanDetailId}
+        onOpenChange={setLoanDrawerOpen}
+      />
+    )
+  }
+
   return (
     <>
       <AppDrawerShell
@@ -305,11 +316,7 @@ export function MemberDetailDrawer({
         {body}
       </AppDrawerShell>
 
-      <LoanDetailDrawer
-        open={loanDrawerOpen}
-        loanId={loanDetailId}
-        onOpenChange={setLoanDrawerOpen}
-      />
+      {nestedLoanDrawer}
     </>
   )
 }

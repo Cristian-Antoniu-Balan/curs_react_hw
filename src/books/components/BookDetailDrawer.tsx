@@ -126,7 +126,6 @@ function ActiveLoanCard({
     >
       <Box
         as="button"
-        type="button"
         fontSize={UiFontSize.Md}
         fontWeight={UiFontWeight.Semibold}
         color={UiColor.BrandFg}
@@ -340,6 +339,28 @@ export function BookDetailDrawer({
     body = <Text color={UiColor.Muted}>{bookStrings.detailLoadFailed}</Text>
   }
 
+  let nestedLoanDrawer = null
+  if (loanDrawerOpen) {
+    nestedLoanDrawer = (
+      <LoanDetailDrawer
+        open={loanDrawerOpen}
+        loanId={loanDetailId}
+        onOpenChange={setLoanDrawerOpen}
+      />
+    )
+  }
+
+  let nestedMemberDrawer = null
+  if (memberDrawerOpen) {
+    nestedMemberDrawer = (
+      <MemberDetailDrawer
+        open={memberDrawerOpen}
+        memberId={memberDetailId}
+        onOpenChange={setMemberDrawerOpen}
+      />
+    )
+  }
+
   return (
     <>
       <AppDrawerShell
@@ -350,16 +371,8 @@ export function BookDetailDrawer({
         {body}
       </AppDrawerShell>
 
-      <LoanDetailDrawer
-        open={loanDrawerOpen}
-        loanId={loanDetailId}
-        onOpenChange={setLoanDrawerOpen}
-      />
-      <MemberDetailDrawer
-        open={memberDrawerOpen}
-        memberId={memberDetailId}
-        onOpenChange={setMemberDrawerOpen}
-      />
+      {nestedLoanDrawer}
+      {nestedMemberDrawer}
     </>
   )
 }
