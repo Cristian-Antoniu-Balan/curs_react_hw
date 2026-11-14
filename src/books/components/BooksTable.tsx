@@ -92,7 +92,7 @@ export function BooksTable({
             variant={UiBadgeVariant.Subtle}
             fontSize={UiFontSize.Md}
           >
-            {availabilityLabel(book.isAvailable)}
+            {availabilityLabel(book)}
           </Badge>
         </Table.Cell>
         <RowActionsMenu

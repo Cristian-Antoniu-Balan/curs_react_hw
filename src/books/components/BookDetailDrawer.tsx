@@ -319,7 +319,7 @@ export function BookDetailDrawer({
             colorPalette={booleanBadgePalette(book.isAvailable)}
             variant={UiBadgeVariant.Subtle}
           >
-            {availabilityLabel(book.isAvailable)}
+            {availabilityLabel(book)}
           </Badge>
         </Flex>
         <DetailRow label={bookStrings.fieldAuthor} value={book.author} />

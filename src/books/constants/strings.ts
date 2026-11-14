@@ -54,6 +54,8 @@ export const bookStrings = {
   fieldAvailability: 'Availability',
   available: 'Available',
   unavailable: 'Unavailable',
+  availableCountOpen: ' (',
+  availableCountClose: ')',
   columnTitle: 'Title',
   columnAuthor: 'Author',
   columnCopies: 'Copies',

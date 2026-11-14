@@ -3,6 +3,7 @@ export type Book = {
   title: string
   author: string
   copies: number
+  loanedCopies: number
   isAvailable: boolean
 }
 
