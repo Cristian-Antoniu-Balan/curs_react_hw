@@ -7,18 +7,6 @@ export const strings = {
     members: 'Members',
     loans: 'Loans',
   },
-  books: {
-    title: 'Books',
-    empty: 'No books found.',
-    loadFailed: 'Failed to load books',
-    titleAuthorSeparator: ' — ',
-    copiesOpen: ' (',
-    copiesLabel: ' copies',
-    availabilityPrefix: ', ',
-    available: 'available',
-    unavailable: 'unavailable',
-    copiesClose: ')',
-  },
   members: {
     title: 'Members',
     placeholder: 'Members UI will be added next.',
