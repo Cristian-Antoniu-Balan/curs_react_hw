@@ -1,6 +1,7 @@
 export const strings = {
   app: {
     title: 'Library',
+    copyright: '© 2026 Library',
   },
   nav: {
     books: 'Books',

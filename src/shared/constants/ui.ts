@@ -38,6 +38,13 @@ export const UiOverflow = {
 
 export type UiOverflow = (typeof UiOverflow)[keyof typeof UiOverflow]
 
+export const UiScrollbarGutter = {
+  Stable: 'stable',
+} as const
+
+export type UiScrollbarGutter =
+  (typeof UiScrollbarGutter)[keyof typeof UiScrollbarGutter]
+
 export const UiStackAlign = {
   Stretch: 'stretch',
 } as const
@@ -80,6 +87,7 @@ export type UiListStyle = (typeof UiListStyle)[keyof typeof UiListStyle]
 export const UiHtmlElement = {
   Header: 'header',
   Main: 'main',
+  Footer: 'footer',
   Nav: 'nav',
   UnorderedList: 'ul',
   ListItem: 'li',
@@ -112,13 +120,14 @@ export const UiSpace = {
 export type UiSpace = (typeof UiSpace)[keyof typeof UiSpace]
 
 export const UiMinHeight = {
-  Viewport: '100vh',
+  Viewport: '100dvh',
   BrandMark: '10px',
   Zero: '0',
 } as const
 
 export const UiHeight = {
   Full: '100%',
+  Viewport: '100dvh',
 } as const
 
 export type UiHeight = (typeof UiHeight)[keyof typeof UiHeight]

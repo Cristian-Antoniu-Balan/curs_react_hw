@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from 'react-router-dom';
-import { Box, Container, Flex, Heading, HStack, Stack } from '@chakra-ui/react';
+import { Box, Container, Flex, Heading, HStack, Text } from '@chakra-ui/react';
 import backgroundImage from '@/assets/background.jpg';
 import { ColorModeButton } from '@/components/ui/color-mode';
 import { AppRoute } from '@/shared/constants/routes';
@@ -16,21 +16,28 @@ import {
   UiColor,
   UiDisplay,
   UiFlexAlign,
+  UiFlexDirection,
+  UiFlexGrow,
   UiFlexJustify,
   UiFlexShrink,
   UiFlexWrap,
+  UiFontSize,
   UiFontWeight,
   UiGap,
   UiHeadingSize,
+  UiHeight,
   UiHtmlElement,
   UiInset,
   UiLetterSpacing,
   UiMargin,
   UiMaxWidth,
   UiMinHeight,
+  UiOverflow,
   UiPosition,
   UiRadius,
+  UiScrollbarGutter,
   UiSpace,
+  UiTextAlign,
   UiTextDecoration,
   UiTransition,
   UiWidth,
@@ -80,7 +87,11 @@ function NavItem({ to, label }: NavItemProps) {
 
 export function AppLayout() {
   const content = (
-    <Box position={UiPosition.Relative} minH={UiMinHeight.Viewport}>
+    <Box
+      position={UiPosition.Relative}
+      h={UiHeight.Viewport}
+      overflow={UiOverflow.Hidden}
+    >
       <Box
         aria-hidden
         position={UiPosition.Fixed}
@@ -99,17 +110,15 @@ export function AppLayout() {
         zIndex={UiZIndex.Background}
         bg={UiBgToken.AppCanvasWash}
       />
-      <Stack
-        gap={UiGap.None}
-        minH={UiMinHeight.Viewport}
+      <Flex
+        direction={UiFlexDirection.Column}
+        h={UiHeight.Full}
         position={UiPosition.Relative}
         zIndex={UiZIndex.Content}
       >
         <Box
           as={UiHtmlElement.Header}
-          position={UiPosition.Sticky}
-          top={UiInset.Zero}
-          zIndex={UiZIndex.Header}
+          flexShrink={UiFlexShrink.None}
           bg={UiBgToken.AppHeader}
           backdropFilter={UiBackdropFilter.Header}
           borderBottomWidth={UiBorderWidth.OnePx}
@@ -150,15 +159,39 @@ export function AppLayout() {
           </Flex>
         </Box>
 
-        <Container
+        <Box
           as={UiHtmlElement.Main}
-          maxW={UiMaxWidth.SixXl}
-          py={UiSpace.Eight}
-          px={UiSpace.Four}
+          flexGrow={UiFlexGrow.One}
+          minH={UiMinHeight.Zero}
+          overflowY={UiOverflow.Auto}
+          scrollbarGutter={UiScrollbarGutter.Stable}
         >
-          <Outlet />
-        </Container>
-      </Stack>
+          <Container maxW={UiMaxWidth.SixXl} py={UiSpace.Eight} px={UiSpace.Four}>
+            <Outlet />
+          </Container>
+        </Box>
+
+        <Box
+          as={UiHtmlElement.Footer}
+          flexShrink={UiFlexShrink.None}
+          bg={UiBgToken.AppHeader}
+          backdropFilter={UiBackdropFilter.Header}
+          borderTopWidth={UiBorderWidth.OnePx}
+          borderColor={UiBorderColor.Panel}
+          px={UiSpace.Four}
+          py={UiSpace.Three}
+        >
+          <Text
+            maxW={UiMaxWidth.SixXl}
+            mx={UiMargin.Auto}
+            color={UiColor.Muted}
+            fontSize={UiFontSize.Sm}
+            textAlign={UiTextAlign.Center}
+          >
+            {strings.app.copyright}
+          </Text>
+        </Box>
+      </Flex>
     </Box>
   );
 
