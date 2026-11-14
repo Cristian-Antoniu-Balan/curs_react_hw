@@ -1,4 +1,4 @@
-import { formatLoanMemberName } from '@/loans/utils/formatMemberName'
+import { formatPersonName } from '@/shared/utils/formatPersonName'
 
 export const LoanMemberOptionSeparator = {
   EmailOpen: ' (',
@@ -11,7 +11,7 @@ export function formatMemberOptionLabel(member: {
   email: string
 }): string {
   return [
-    formatLoanMemberName(member),
+    formatPersonName(member),
     LoanMemberOptionSeparator.EmailOpen,
     member.email,
     LoanMemberOptionSeparator.EmailClose,

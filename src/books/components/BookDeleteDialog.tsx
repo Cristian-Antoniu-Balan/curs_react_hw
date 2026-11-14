@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import {
-  Alert,
   Button,
   Stack,
   Text,
@@ -8,10 +7,10 @@ import {
 import { deleteBook } from '@/books/api/booksApi'
 import { bookStrings } from '@/books/constants/strings'
 import type { Book } from '@/books/types/book'
-import { resolveErrorMessage } from '@/books/utils/resolveErrorMessage'
+import { resolveErrorMessage } from '@/shared/utils/resolveErrorMessage'
 import { AppDialogShell } from '@/shared/components/AppDialogShell'
+import { InlineErrorAlert } from '@/shared/components/InlineErrorAlert'
 import {
-  UiAlertStatus,
   UiButtonColorPalette,
   UiButtonVariant,
   UiGap,
@@ -63,18 +62,6 @@ export function BookDeleteDialog({
     )
   }
 
-  let errorAlert = null
-  if (error) {
-    errorAlert = (
-      <Alert.Root status={UiAlertStatus.Error}>
-        <Alert.Indicator />
-        <Alert.Content>
-          <Alert.Description>{error}</Alert.Description>
-        </Alert.Content>
-      </Alert.Root>
-    )
-  }
-
   return (
     <AppDialogShell
       open={open}
@@ -87,7 +74,7 @@ export function BookDeleteDialog({
       }}
       body={
         <Stack gap={UiGap.Three}>
-          {errorAlert}
+          <InlineErrorAlert message={error} />
           {confirmText}
         </Stack>
       }

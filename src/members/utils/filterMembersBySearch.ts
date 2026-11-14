@@ -1,5 +1,5 @@
 import type { Member } from '@/members/types/member'
-import { MemberNameSeparator } from '@/members/utils/formatMemberName'
+import { formatPersonName } from '@/shared/utils/formatPersonName'
 
 export function filterMembersBySearch(
   members: Member[],
@@ -14,13 +14,7 @@ export function filterMembersBySearch(
     const firstNameMatch = member.firstName.toLowerCase().includes(query)
     const lastNameMatch = member.lastName.toLowerCase().includes(query)
     const emailMatch = member.email.toLowerCase().includes(query)
-    const fullName = [
-      member.firstName,
-      MemberNameSeparator.Space,
-      member.lastName,
-    ]
-      .join('')
-      .toLowerCase()
+    const fullName = formatPersonName(member).toLowerCase()
     const fullNameMatch = fullName.includes(query)
     return firstNameMatch || lastNameMatch || emailMatch || fullNameMatch
   })

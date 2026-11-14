@@ -3,9 +3,6 @@ import { Button, Flex, Spinner, Stack, Text } from '@chakra-ui/react'
 import { LoanCreateDialog } from '@/loans/components/LoanCreateDialog'
 import { LoanDetailDrawer } from '@/loans/components/LoanDetailDrawer'
 import { LoanReturnDialog } from '@/loans/components/LoanReturnDialog'
-import { LoansActiveFilter } from '@/loans/components/LoansActiveFilter'
-import { LoansBookFilter } from '@/loans/components/LoansBookFilter'
-import { LoansMemberFilter } from '@/loans/components/LoansMemberFilter'
 import { LoansTable } from '@/loans/components/LoansTable'
 import {
   LoanActiveFilter,
@@ -25,6 +22,7 @@ import { loanBookFilterOptions } from '@/loans/utils/loanBookFilterOptions'
 import { loanMemberFilterOptions } from '@/loans/utils/loanMemberFilterOptions'
 import { sortLoans } from '@/loans/utils/sortLoans'
 import { ResourcePage } from '@/shared/components/ResourcePage'
+import { SelectFilter } from '@/shared/components/SelectFilter'
 import { SurfacePanel } from '@/shared/components/SurfacePanel'
 import {
   UiButtonColorPalette,
@@ -151,16 +149,54 @@ export function LoansPage() {
           minW={UiMinWidth.None}
           wrap={UiFlexWrap.Wrap}
         >
-          <LoansActiveFilter value={activeFilter} onChange={setActiveFilter} />
-          <LoansBookFilter
-            value={bookFilter}
-            options={bookOptions}
-            onChange={setBookFilter}
+          <SelectFilter
+            label={loanStrings.filterLabel}
+            value={activeFilter}
+            onChange={setActiveFilter}
+            options={[
+              {
+                value: LoanActiveFilter.All,
+                label: loanStrings.filterAll,
+              },
+              {
+                value: LoanActiveFilter.Active,
+                label: loanStrings.filterActive,
+              },
+              {
+                value: LoanActiveFilter.Inactive,
+                label: loanStrings.filterInactive,
+              },
+            ]}
           />
-          <LoansMemberFilter
+          <SelectFilter
+            label={loanStrings.filterBookLabel}
+            value={bookFilter}
+            onChange={setBookFilter}
+            options={[
+              {
+                value: LoanEntityFilter.All,
+                label: loanStrings.filterBookAll,
+              },
+              ...bookOptions.map((option) => ({
+                value: option.id,
+                label: option.title,
+              })),
+            ]}
+          />
+          <SelectFilter
+            label={loanStrings.filterMemberLabel}
             value={memberFilter}
-            options={memberOptions}
             onChange={setMemberFilter}
+            options={[
+              {
+                value: LoanEntityFilter.All,
+                label: loanStrings.filterMemberAll,
+              },
+              ...memberOptions.map((option) => ({
+                value: option.id,
+                label: option.label,
+              })),
+            ]}
           />
         </Flex>
         <Button

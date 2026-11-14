@@ -5,8 +5,6 @@ import { MemberDeleteDialog } from '@/members/components/MemberDeleteDialog'
 import { MemberDetailDrawer } from '@/members/components/MemberDetailDrawer'
 import { MemberEditDialog } from '@/members/components/MemberEditDialog'
 import { MemberReturnDialog } from '@/members/components/MemberReturnDialog'
-import { MembersActiveLoansFilter } from '@/members/components/MembersActiveLoansFilter'
-import { MembersSearchField } from '@/members/components/MembersSearchField'
 import { MembersTable } from '@/members/components/MembersTable'
 import {
   MemberActiveLoansFilter,
@@ -23,6 +21,8 @@ import { filterMembersByActiveLoans } from '@/members/utils/filterMembersByActiv
 import { filterMembersBySearch } from '@/members/utils/filterMembersBySearch'
 import { sortMembers } from '@/members/utils/sortMembers'
 import { ResourcePage } from '@/shared/components/ResourcePage'
+import { SearchField } from '@/shared/components/SearchField'
+import { SelectFilter } from '@/shared/components/SelectFilter'
 import { SurfacePanel } from '@/shared/components/SurfacePanel'
 import {
   UiButtonColorPalette,
@@ -104,10 +104,30 @@ export function MembersPage() {
           flex={UiFlexGrow.One}
           minW={UiMinWidth.None}
         >
-          <MembersSearchField value={search} onChange={setSearch} />
-          <MembersActiveLoansFilter
+          <SearchField
+            label={memberStrings.searchLabel}
+            placeholder={memberStrings.searchPlaceholder}
+            value={search}
+            onChange={setSearch}
+          />
+          <SelectFilter
+            label={memberStrings.filterLabel}
             value={activeLoansFilter}
             onChange={setActiveLoansFilter}
+            options={[
+              {
+                value: MemberActiveLoansFilter.All,
+                label: memberStrings.filterAll,
+              },
+              {
+                value: MemberActiveLoansFilter.Active,
+                label: memberStrings.filterActive,
+              },
+              {
+                value: MemberActiveLoansFilter.Inactive,
+                label: memberStrings.filterInactive,
+              },
+            ]}
           />
         </Flex>
         <Button

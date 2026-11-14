@@ -1,9 +1,9 @@
 import { UiBadgeColorPalette } from '@/shared/constants/ui'
 
-export function availabilityBadgePalette(
-  isAvailable: boolean,
+export function booleanBadgePalette(
+  isPositive: boolean,
 ): UiBadgeColorPalette {
-  if (isAvailable) {
+  if (isPositive) {
     return UiBadgeColorPalette.Green
   }
 

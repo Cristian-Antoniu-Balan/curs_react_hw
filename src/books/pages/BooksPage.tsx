@@ -6,8 +6,6 @@ import { BookDeleteDialog } from '@/books/components/BookDeleteDialog'
 import { BookDetailDrawer } from '@/books/components/BookDetailDrawer'
 import { BookEditDialog } from '@/books/components/BookEditDialog'
 import { BookLoanDialog } from '@/books/components/BookLoanDialog'
-import { BooksAvailabilityFilter } from '@/books/components/BooksAvailabilityFilter'
-import { BooksSearchField } from '@/books/components/BooksSearchField'
 import { BooksTable } from '@/books/components/BooksTable'
 import {
   BookAvailabilityFilter,
@@ -20,6 +18,8 @@ import type { Book } from '@/books/types/book'
 import { filterBooksBySearch } from '@/books/utils/filterBooksBySearch'
 import { sortBooks } from '@/books/utils/sortBooks'
 import { ResourcePage } from '@/shared/components/ResourcePage'
+import { SearchField } from '@/shared/components/SearchField'
+import { SelectFilter } from '@/shared/components/SelectFilter'
 import { SurfacePanel } from '@/shared/components/SurfacePanel'
 import {
   UiButtonColorPalette,
@@ -102,8 +102,31 @@ export function BooksPage() {
           flex={UiFlexGrow.One}
           minW={UiMinWidth.None}
         >
-          <BooksSearchField value={search} onChange={setSearch} />
-          <BooksAvailabilityFilter value={filter} onChange={setFilter} />
+          <SearchField
+            label={bookStrings.searchLabel}
+            placeholder={bookStrings.searchPlaceholder}
+            value={search}
+            onChange={setSearch}
+          />
+          <SelectFilter
+            label={bookStrings.filterLabel}
+            value={filter}
+            onChange={setFilter}
+            options={[
+              {
+                value: BookAvailabilityFilter.All,
+                label: bookStrings.filterAll,
+              },
+              {
+                value: BookAvailabilityFilter.Available,
+                label: bookStrings.filterAvailable,
+              },
+              {
+                value: BookAvailabilityFilter.Unavailable,
+                label: bookStrings.filterUnavailable,
+              },
+            ]}
+          />
         </Flex>
         <Button
           colorPalette={UiButtonColorPalette.Brand}

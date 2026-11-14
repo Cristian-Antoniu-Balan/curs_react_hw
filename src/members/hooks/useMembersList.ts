@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { listMembers } from '@/members/api/membersApi'
 import { memberStrings } from '@/members/constants/strings'
-import { resolveErrorMessage } from '@/members/utils/resolveErrorMessage'
+import { resolveErrorMessage } from '@/shared/utils/resolveErrorMessage'
 import type { Member } from '@/members/types/member'
 
 export function useMembersList() {

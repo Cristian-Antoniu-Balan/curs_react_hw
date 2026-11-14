@@ -3,7 +3,7 @@ import {
   type LoanSortField as LoanSortFieldValue,
 } from '@/loans/constants/sort'
 import type { Loan } from '@/loans/types/loan'
-import { formatLoanMemberName } from '@/loans/utils/formatMemberName'
+import { formatPersonName } from '@/shared/utils/formatPersonName'
 import {
   UiSortDirection,
   type UiSortDirection as UiSortDirectionValue,
@@ -19,7 +19,7 @@ function loanSortValue(loan: Loan, field: LoanSortFieldValue): string {
   }
 
   if (field === LoanSortField.Member) {
-    return formatLoanMemberName(loan.member)
+    return formatPersonName(loan.member)
   }
 
   return loan.loanedAt

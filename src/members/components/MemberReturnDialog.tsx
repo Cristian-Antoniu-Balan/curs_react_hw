@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import {
-  Alert,
   Box,
   Button,
   Field,
@@ -15,63 +14,30 @@ import { MemberSelectEmptyValue } from '@/members/constants/sort'
 import { memberStrings } from '@/members/constants/strings'
 import type { Member } from '@/members/types/member'
 import { formatLoanBookOptionLabel } from '@/members/utils/formatLoanBookLabel'
-import { resolveErrorMessage } from '@/members/utils/resolveErrorMessage'
+import { resolveErrorMessage } from '@/shared/utils/resolveErrorMessage'
 import { AppDialogShell } from '@/shared/components/AppDialogShell'
+import { SummaryRow } from '@/shared/components/SummaryRow'
 import {
-  UiAlertStatus,
   UiBgToken,
   UiBorderColor,
   UiBorderWidth,
   UiButtonColorPalette,
   UiButtonVariant,
   UiColor,
-  UiFontSize,
-  UiFontWeight,
   UiGap,
-  UiLetterSpacing,
   UiNativeSelectSize,
   UiRadius,
   UiSpace,
-  UiTextTransform,
   UiWidth,
 } from '@/shared/constants/ui'
 import { formatDateTime } from '@/shared/utils/formatDateTime'
+import { InlineErrorAlert } from '@/shared/components/InlineErrorAlert'
 
 type MemberReturnDialogProps = {
   open: boolean
   member: Member | null
   onOpenChange: (open: boolean) => void
   onReturned: () => Promise<void> | void
-}
-
-type SummaryRowProps = {
-  label: string
-  value: string
-}
-
-function SummaryRow({ label, value }: SummaryRowProps) {
-  return (
-    <Box
-      py={UiSpace.Three}
-      borderBottomWidth={UiBorderWidth.OnePx}
-      borderColor={UiBorderColor.Panel}
-      _last={{ borderBottomWidth: UiBorderWidth.None }}
-    >
-      <Text
-        fontSize={UiFontSize.Xs}
-        color={UiColor.Muted}
-        textTransform={UiTextTransform.Uppercase}
-        letterSpacing={UiLetterSpacing.Wide}
-        fontWeight={UiFontWeight.Semibold}
-        mb={UiSpace.One}
-      >
-        {label}
-      </Text>
-      <Text fontSize={UiFontSize.Md} fontWeight={UiFontWeight.Medium}>
-        {value}
-      </Text>
-    </Box>
-  )
 }
 
 type LoanSummaryProps = {
@@ -209,14 +175,7 @@ export function MemberReturnDialog({
   }
 
   if (hasFetchedLoans && !loadingLoans && loadError) {
-    bodyContent = (
-      <Alert.Root status={UiAlertStatus.Error}>
-        <Alert.Indicator />
-        <Alert.Content>
-          <Alert.Description>{loadError}</Alert.Description>
-        </Alert.Content>
-      </Alert.Root>
-    )
+    bodyContent = <InlineErrorAlert message={loadError} />
   }
 
   if (hasFetchedLoans && !loadingLoans && !loadError && loans.length === 0) {
@@ -226,17 +185,6 @@ export function MemberReturnDialog({
   }
 
   if (hasFetchedLoans && !loadingLoans && !loadError && loans.length > 0) {
-    let errorAlert = null
-    if (error) {
-      errorAlert = (
-        <Alert.Root status={UiAlertStatus.Error}>
-          <Alert.Indicator />
-          <Alert.Content>
-            <Alert.Description>{error}</Alert.Description>
-          </Alert.Content>
-        </Alert.Root>
-      )
-    }
 
     let loanPicker = null
     if (loans.length > 1) {
@@ -276,7 +224,7 @@ export function MemberReturnDialog({
 
     bodyContent = (
       <Stack gap={UiGap.Four}>
-        {errorAlert}
+        <InlineErrorAlert message={error} />
         {loanPicker}
         {loanSummary}
       </Stack>

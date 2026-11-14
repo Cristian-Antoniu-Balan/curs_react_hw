@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { Alert, Button, Stack } from '@chakra-ui/react'
+import { Button, Stack } from '@chakra-ui/react'
 import { replaceMember } from '@/members/api/membersApi'
 import { MemberFormFields } from '@/members/components/MemberFormFields'
 import { memberStrings } from '@/members/constants/strings'
 import type { Member } from '@/members/types/member'
-import { resolveErrorMessage } from '@/members/utils/resolveErrorMessage'
+import { resolveErrorMessage } from '@/shared/utils/resolveErrorMessage'
 import {
   emptyMemberFormValues,
   memberToFormValues,
@@ -12,8 +12,8 @@ import {
   type MemberFormValues,
 } from '@/members/utils/toMemberRequest'
 import { AppDialogShell } from '@/shared/components/AppDialogShell'
+import { InlineErrorAlert } from '@/shared/components/InlineErrorAlert'
 import {
-  UiAlertStatus,
   UiButtonColorPalette,
   UiButtonVariant,
   UiGap,
@@ -78,18 +78,6 @@ export function MemberEditDialog({
     }
   }
 
-  let errorAlert = null
-  if (error) {
-    errorAlert = (
-      <Alert.Root status={UiAlertStatus.Error}>
-        <Alert.Indicator />
-        <Alert.Content>
-          <Alert.Description>{error}</Alert.Description>
-        </Alert.Content>
-      </Alert.Root>
-    )
-  }
-
   return (
     <AppDialogShell
       open={open}
@@ -97,7 +85,7 @@ export function MemberEditDialog({
       onOpenChange={handleOpenChange}
       body={
         <Stack gap={UiGap.Three}>
-          {errorAlert}
+          <InlineErrorAlert message={error} />
           <MemberFormFields
             values={values}
             onChange={setValues}

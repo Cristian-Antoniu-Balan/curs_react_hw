@@ -1,70 +1,34 @@
 import { useState } from 'react'
 import {
-  Alert,
   Box,
   Button,
   Stack,
-  Text,
 } from '@chakra-ui/react'
 import { returnLoan } from '@/loans/api/loansApi'
 import { loanStrings } from '@/loans/constants/strings'
 import type { Loan } from '@/loans/types/loan'
-import { formatLoanMemberName } from '@/loans/utils/formatMemberName'
-import { resolveErrorMessage } from '@/loans/utils/resolveErrorMessage'
+import { formatPersonName } from '@/shared/utils/formatPersonName'
+import { resolveErrorMessage } from '@/shared/utils/resolveErrorMessage'
 import { AppDialogShell } from '@/shared/components/AppDialogShell'
+import { SummaryRow } from '@/shared/components/SummaryRow'
 import {
-  UiAlertStatus,
   UiBgToken,
   UiBorderColor,
   UiBorderWidth,
   UiButtonColorPalette,
   UiButtonVariant,
-  UiColor,
-  UiFontSize,
-  UiFontWeight,
   UiGap,
-  UiLetterSpacing,
   UiRadius,
   UiSpace,
-  UiTextTransform,
 } from '@/shared/constants/ui'
 import { formatDateTime } from '@/shared/utils/formatDateTime'
+import { InlineErrorAlert } from '@/shared/components/InlineErrorAlert'
 
 type LoanReturnDialogProps = {
   open: boolean
   loan: Loan | null
   onOpenChange: (open: boolean) => void
   onReturned: () => Promise<void> | void
-}
-
-type SummaryRowProps = {
-  label: string
-  value: string
-}
-
-function SummaryRow({ label, value }: SummaryRowProps) {
-  return (
-    <Box
-      py={UiSpace.Three}
-      borderBottomWidth={UiBorderWidth.OnePx}
-      borderColor={UiBorderColor.Panel}
-      _last={{ borderBottomWidth: UiBorderWidth.None }}
-    >
-      <Text
-        fontSize={UiFontSize.Xs}
-        color={UiColor.Muted}
-        textTransform={UiTextTransform.Uppercase}
-        letterSpacing={UiLetterSpacing.Wide}
-        fontWeight={UiFontWeight.Semibold}
-        mb={UiSpace.One}
-      >
-        {label}
-      </Text>
-      <Text fontSize={UiFontSize.Md} fontWeight={UiFontWeight.Medium}>
-        {value}
-      </Text>
-    </Box>
-  )
 }
 
 export function LoanReturnDialog({
@@ -110,21 +74,10 @@ export function LoanReturnDialog({
   let bodyContent = null
 
   if (loan) {
-    let errorAlert = null
-    if (error) {
-      errorAlert = (
-        <Alert.Root status={UiAlertStatus.Error}>
-          <Alert.Indicator />
-          <Alert.Content>
-            <Alert.Description>{error}</Alert.Description>
-          </Alert.Content>
-        </Alert.Root>
-      )
-    }
 
     bodyContent = (
       <Stack gap={UiGap.Four}>
-        {errorAlert}
+        <InlineErrorAlert message={error} />
         <Box
           borderWidth={UiBorderWidth.OnePx}
           borderColor={UiBorderColor.Panel}
@@ -142,7 +95,7 @@ export function LoanReturnDialog({
           />
           <SummaryRow
             label={loanStrings.returnMemberLabel}
-            value={formatLoanMemberName(loan.member)}
+            value={formatPersonName(loan.member)}
           />
           <SummaryRow
             label={loanStrings.returnLoanedAtLabel}

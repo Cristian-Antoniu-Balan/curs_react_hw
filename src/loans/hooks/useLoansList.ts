@@ -6,7 +6,7 @@ import {
 } from '@/loans/constants/activeFilter'
 import { loanStrings } from '@/loans/constants/strings'
 import type { Loan } from '@/loans/types/loan'
-import { resolveErrorMessage } from '@/loans/utils/resolveErrorMessage'
+import { resolveErrorMessage } from '@/shared/utils/resolveErrorMessage'
 
 function activeQueryFromFilter(
   filter: LoanActiveFilterValue,

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import {
-  Alert,
   Box,
   Spinner,
   Stack,
@@ -12,11 +11,11 @@ import type { Loan } from '@/loans/types/loan'
 import { getMember } from '@/members/api/membersApi'
 import { memberStrings } from '@/members/constants/strings'
 import type { Member } from '@/members/types/member'
-import { formatMemberName } from '@/members/utils/formatMemberName'
-import { resolveErrorMessage } from '@/members/utils/resolveErrorMessage'
+import { formatPersonName } from '@/shared/utils/formatPersonName'
+import { resolveErrorMessage } from '@/shared/utils/resolveErrorMessage'
 import { AppDrawerShell } from '@/shared/components/AppDrawerShell'
+import { DetailRow } from '@/shared/components/DetailRow'
 import {
-  UiAlertStatus,
   UiBgToken,
   UiBorderColor,
   UiBorderWidth,
@@ -35,41 +34,13 @@ import {
   UiWidth,
 } from '@/shared/constants/ui'
 import { formatDateTime } from '@/shared/utils/formatDateTime'
+import { InlineErrorAlert } from '@/shared/components/InlineErrorAlert'
 
 type MemberDetailDrawerProps = {
   open: boolean
   memberId: string | null
   onOpenChange: (open: boolean) => void
   onMemberChanged?: () => Promise<void> | void
-}
-
-type DetailRowProps = {
-  label: string
-  value: string
-}
-
-function DetailRow({ label, value }: DetailRowProps) {
-  return (
-    <Box
-      py={UiSpace.Three}
-      borderBottomWidth={UiBorderWidth.OnePx}
-      borderColor={UiBorderColor.Panel}
-    >
-      <Text
-        fontSize={UiFontSize.Xs}
-        color={UiColor.Muted}
-        textTransform={UiTextTransform.Uppercase}
-        letterSpacing={UiLetterSpacing.Wide}
-        fontWeight={UiFontWeight.Semibold}
-        mb={UiSpace.One}
-      >
-        {label}
-      </Text>
-      <Text fontSize={UiFontSize.Md} fontWeight={UiFontWeight.Medium}>
-        {value}
-      </Text>
-    </Box>
-  )
 }
 
 type ActiveLoanCardProps = {
@@ -235,14 +206,7 @@ export function MemberDetailDrawer({
   }
 
   if (!loading && error) {
-    body = (
-      <Alert.Root status={UiAlertStatus.Error}>
-        <Alert.Indicator />
-        <Alert.Content>
-          <Alert.Description>{error}</Alert.Description>
-        </Alert.Content>
-      </Alert.Root>
-    )
+    body = <InlineErrorAlert message={error} />
   }
 
   if (!loading && !error && member) {
@@ -260,12 +224,7 @@ export function MemberDetailDrawer({
           >
             {memberStrings.detailActiveLoans}
           </Text>
-          <Alert.Root status={UiAlertStatus.Error}>
-            <Alert.Indicator />
-            <Alert.Content>
-              <Alert.Description>{loansError}</Alert.Description>
-            </Alert.Content>
-          </Alert.Root>
+          <InlineErrorAlert message={loansError} />
         </Stack>
       )
     }
@@ -309,7 +268,7 @@ export function MemberDetailDrawer({
           letterSpacing={UiLetterSpacing.Tight}
           mb={UiSpace.Four}
         >
-          {formatMemberName(member)}
+          {formatPersonName(member)}
         </Text>
         <DetailRow
           label={memberStrings.fieldFirstName}

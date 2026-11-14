@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import {
-  Alert,
   Button,
   Field,
   NativeSelect,
@@ -14,10 +13,10 @@ import { BookSelectEmptyValue } from '@/books/constants/sort'
 import { bookStrings } from '@/books/constants/strings'
 import type { Book } from '@/books/types/book'
 import { formatMemberLabel } from '@/books/utils/formatMemberLabel'
-import { resolveErrorMessage } from '@/books/utils/resolveErrorMessage'
+import { resolveErrorMessage } from '@/shared/utils/resolveErrorMessage'
 import { AppDialogShell } from '@/shared/components/AppDialogShell'
+import { InlineErrorAlert } from '@/shared/components/InlineErrorAlert'
 import {
-  UiAlertStatus,
   UiButtonColorPalette,
   UiButtonVariant,
   UiGap,
@@ -111,32 +110,14 @@ export function BookLoanDialog({
   }
 
   if (!loadingMembers && loadError) {
-    bodyContent = (
-      <Alert.Root status={UiAlertStatus.Error}>
-        <Alert.Indicator />
-        <Alert.Content>
-          <Alert.Description>{loadError}</Alert.Description>
-        </Alert.Content>
-      </Alert.Root>
-    )
+    bodyContent = <InlineErrorAlert message={loadError} />
   }
 
   if (!loadingMembers && !loadError) {
-    let errorAlert = null
-    if (error) {
-      errorAlert = (
-        <Alert.Root status={UiAlertStatus.Error}>
-          <Alert.Indicator />
-          <Alert.Content>
-            <Alert.Description>{error}</Alert.Description>
-          </Alert.Content>
-        </Alert.Root>
-      )
-    }
 
     bodyContent = (
       <Stack gap={UiGap.Three}>
-        {errorAlert}
+        <InlineErrorAlert message={error} />
         <Field.Root>
           <Field.Label>{bookStrings.loanMemberLabel}</Field.Label>
           <NativeSelect.Root

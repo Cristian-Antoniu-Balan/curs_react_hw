@@ -5,7 +5,7 @@ import {
   type BookAvailabilityFilter as BookAvailabilityFilterValue,
 } from '@/books/constants/availabilityFilter'
 import { bookStrings } from '@/books/constants/strings'
-import { resolveErrorMessage } from '@/books/utils/resolveErrorMessage'
+import { resolveErrorMessage } from '@/shared/utils/resolveErrorMessage'
 import type { Book } from '@/books/types/book'
 
 function availableQueryFromFilter(

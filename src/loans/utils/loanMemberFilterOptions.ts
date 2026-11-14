@@ -1,5 +1,5 @@
 import type { Loan } from '@/loans/types/loan'
-import { formatLoanMemberName } from '@/loans/utils/formatMemberName'
+import { formatPersonName } from '@/shared/utils/formatPersonName'
 
 export type LoanMemberFilterOption = {
   id: string
@@ -18,7 +18,7 @@ export function loanMemberFilterOptions(
 
     byId.set(loan.member.id, {
       id: loan.member.id,
-      label: formatLoanMemberName(loan.member),
+      label: formatPersonName(loan.member),
     })
   }
 

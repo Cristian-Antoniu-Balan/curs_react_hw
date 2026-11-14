@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import {
-  Alert,
   Button,
   Stack,
 } from '@chakra-ui/react'
@@ -12,10 +11,10 @@ import {
   toBookRequest,
   type BookFormValues,
 } from '@/books/utils/toBookRequest'
-import { resolveErrorMessage } from '@/books/utils/resolveErrorMessage'
+import { resolveErrorMessage } from '@/shared/utils/resolveErrorMessage'
 import { AppDialogShell } from '@/shared/components/AppDialogShell'
+import { InlineErrorAlert } from '@/shared/components/InlineErrorAlert'
 import {
-  UiAlertStatus,
   UiButtonColorPalette,
   UiButtonVariant,
   UiGap,
@@ -52,18 +51,6 @@ export function BookCreateDialog({
     }
   }
 
-  let errorAlert = null
-  if (error) {
-    errorAlert = (
-      <Alert.Root status={UiAlertStatus.Error}>
-        <Alert.Indicator />
-        <Alert.Content>
-          <Alert.Description>{error}</Alert.Description>
-        </Alert.Content>
-      </Alert.Root>
-    )
-  }
-
   return (
     <AppDialogShell
       open={open}
@@ -77,7 +64,7 @@ export function BookCreateDialog({
       }}
       body={
         <Stack gap={UiGap.Three}>
-          {errorAlert}
+          <InlineErrorAlert message={error} />
           <BookFormFields
             values={values}
             onChange={setValues}

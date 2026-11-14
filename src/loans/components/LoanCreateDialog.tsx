@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import {
-  Alert,
   Button,
   Field,
   NativeSelect,
@@ -15,12 +14,12 @@ import { LoanSelectEmptyValue } from '@/loans/constants/sort'
 import { loanStrings } from '@/loans/constants/strings'
 import { formatBookOptionLabel } from '@/loans/utils/formatBookOptionLabel'
 import { formatMemberOptionLabel } from '@/loans/utils/formatMemberOptionLabel'
-import { resolveErrorMessage } from '@/loans/utils/resolveErrorMessage'
+import { resolveErrorMessage } from '@/shared/utils/resolveErrorMessage'
 import { listMembers } from '@/members/api/membersApi'
 import type { Member } from '@/members/types/member'
 import { AppDialogShell } from '@/shared/components/AppDialogShell'
+import { InlineErrorAlert } from '@/shared/components/InlineErrorAlert'
 import {
-  UiAlertStatus,
   UiButtonColorPalette,
   UiButtonVariant,
   UiColor,
@@ -147,28 +146,10 @@ export function LoanCreateDialog({
   }
 
   if (hasFetchedOptions && !loadingOptions && loadError) {
-    bodyContent = (
-      <Alert.Root status={UiAlertStatus.Error}>
-        <Alert.Indicator />
-        <Alert.Content>
-          <Alert.Description>{loadError}</Alert.Description>
-        </Alert.Content>
-      </Alert.Root>
-    )
+    bodyContent = <InlineErrorAlert message={loadError} />
   }
 
   if (hasFetchedOptions && !loadingOptions && !loadError) {
-    let errorAlert = null
-    if (error) {
-      errorAlert = (
-        <Alert.Root status={UiAlertStatus.Error}>
-          <Alert.Indicator />
-          <Alert.Content>
-            <Alert.Description>{error}</Alert.Description>
-          </Alert.Content>
-        </Alert.Root>
-      )
-    }
 
     let booksField = null
     if (books.length === 0) {
@@ -246,7 +227,7 @@ export function LoanCreateDialog({
 
     bodyContent = (
       <Stack gap={UiGap.Three}>
-        {errorAlert}
+        <InlineErrorAlert message={error} />
         {booksField}
         {membersField}
       </Stack>

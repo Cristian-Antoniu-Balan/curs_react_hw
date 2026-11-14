@@ -1,31 +1,35 @@
+import type { ReactNode } from 'react'
 import { Field, Input } from '@chakra-ui/react'
-import { memberStrings } from '@/members/constants/strings'
 import {
   UiFieldOrientation,
   UiInputType,
   UiWidth,
 } from '@/shared/constants/ui'
 
-type MembersSearchFieldProps = {
+type SearchFieldProps = {
+  label: ReactNode
+  placeholder: string
   value: string
   onChange: (value: string) => void
 }
 
-export function MembersSearchField({
+export function SearchField({
+  label,
+  placeholder,
   value,
   onChange,
-}: MembersSearchFieldProps) {
+}: SearchFieldProps) {
   return (
     <Field.Root
       orientation={UiFieldOrientation.Vertical}
       maxW={UiWidth.SearchMd}
       w={UiWidth.Full}
     >
-      <Field.Label>{memberStrings.searchLabel}</Field.Label>
+      <Field.Label>{label}</Field.Label>
       <Input
         type={UiInputType.Text}
         value={value}
-        placeholder={memberStrings.searchPlaceholder}
+        placeholder={placeholder}
         w={UiWidth.Full}
         onChange={(event) => {
           onChange(event.target.value)

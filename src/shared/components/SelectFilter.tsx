@@ -1,44 +1,46 @@
+import type { ReactNode } from 'react'
 import { Field, NativeSelect } from '@chakra-ui/react'
-import { LoanEntityFilter } from '@/loans/constants/entityFilter'
-import { loanStrings } from '@/loans/constants/strings'
-import type { LoanBookFilterOption } from '@/loans/utils/loanBookFilterOptions'
 import {
   UiFieldOrientation,
   UiNativeSelectSize,
   UiWidth,
 } from '@/shared/constants/ui'
 
-type LoansBookFilterProps = {
-  value: string
-  options: LoanBookFilterOption[]
-  onChange: (value: string) => void
+export type SelectFilterOption<T extends string = string> = {
+  value: T
+  label: ReactNode
 }
 
-export function LoansBookFilter({
+type SelectFilterProps<T extends string = string> = {
+  label: ReactNode
+  value: T
+  options: SelectFilterOption<T>[]
+  onChange: (value: T) => void
+}
+
+export function SelectFilter<T extends string = string>({
+  label,
   value,
   options,
   onChange,
-}: LoansBookFilterProps) {
+}: SelectFilterProps<T>) {
   return (
     <Field.Root
       orientation={UiFieldOrientation.Vertical}
       maxW={UiWidth.FilterSm}
       w={UiWidth.Full}
     >
-      <Field.Label>{loanStrings.filterBookLabel}</Field.Label>
+      <Field.Label>{label}</Field.Label>
       <NativeSelect.Root size={UiNativeSelectSize.Md} w={UiWidth.Full}>
         <NativeSelect.Field
           value={value}
           onChange={(event) => {
-            onChange(event.target.value)
+            onChange(event.target.value as T)
           }}
         >
-          <option value={LoanEntityFilter.All}>
-            {loanStrings.filterBookAll}
-          </option>
           {options.map((option) => (
-            <option key={option.id} value={option.id}>
-              {option.title}
+            <option key={option.value} value={option.value}>
+              {option.label}
             </option>
           ))}
         </NativeSelect.Field>

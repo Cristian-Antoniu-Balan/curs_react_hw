@@ -1,8 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import {
-  Alert,
   Badge,
-  Box,
   Button,
   Flex,
   Spinner,
@@ -13,19 +11,15 @@ import { getLoan } from '@/loans/api/loansApi'
 import { LoanReturnDialog } from '@/loans/components/LoanReturnDialog'
 import { LoanDialogKey, loanStrings } from '@/loans/constants/strings'
 import type { Loan } from '@/loans/types/loan'
-import { activeBadgePalette } from '@/loans/utils/activeBadgePalette'
+import { booleanBadgePalette } from '@/shared/utils/booleanBadgePalette'
 import { activeLabel } from '@/loans/utils/activeLabel'
-import { formatLoanMemberName } from '@/loans/utils/formatMemberName'
-import { resolveErrorMessage } from '@/loans/utils/resolveErrorMessage'
+import { formatPersonName } from '@/shared/utils/formatPersonName'
+import { resolveErrorMessage } from '@/shared/utils/resolveErrorMessage'
 import { AppDrawerShell } from '@/shared/components/AppDrawerShell'
 import {
-  UiAlertStatus,
   UiBadgeVariant,
-  UiBorderColor,
-  UiBorderWidth,
   UiButtonColorPalette,
   UiColor,
-  UiCursor,
   UiFlexAlign,
   UiFlexJustify,
   UiFontSize,
@@ -33,11 +27,11 @@ import {
   UiGap,
   UiLetterSpacing,
   UiSpace,
-  UiTextDecoration,
-  UiTextTransform,
 } from '@/shared/constants/ui'
 import { formatDateTime } from '@/shared/utils/formatDateTime'
 import { notifySuccess } from '@/shared/toast/notify'
+import { InlineErrorAlert } from '@/shared/components/InlineErrorAlert'
+import { DetailRow, LinkDetailRow } from '@/shared/components/DetailRow'
 
 const BookDetailDrawer = lazy(async () => {
   const module = await import('@/books/components/BookDetailDrawer')
@@ -54,84 +48,6 @@ type LoanDetailDrawerProps = {
   loanId: string | null
   onOpenChange: (open: boolean) => void
   onLoanChanged?: () => Promise<void> | void
-}
-
-type DetailRowProps = {
-  label: string
-  value: string
-}
-
-function DetailRow({ label, value }: DetailRowProps) {
-  return (
-    <Box
-      py={UiSpace.Three}
-      borderBottomWidth={UiBorderWidth.OnePx}
-      borderColor={UiBorderColor.Panel}
-    >
-      <Text
-        fontSize={UiFontSize.Xs}
-        color={UiColor.Muted}
-        textTransform={UiTextTransform.Uppercase}
-        letterSpacing={UiLetterSpacing.Wide}
-        fontWeight={UiFontWeight.Semibold}
-        mb={UiSpace.One}
-      >
-        {label}
-      </Text>
-      <Text fontSize={UiFontSize.Md} fontWeight={UiFontWeight.Medium}>
-        {value}
-      </Text>
-    </Box>
-  )
-}
-
-type LinkDetailRowProps = {
-  label: string
-  value: string
-  ariaLabel: string
-  onOpen: () => void
-}
-
-function LinkDetailRow({
-  label,
-  value,
-  ariaLabel,
-  onOpen,
-}: LinkDetailRowProps) {
-  return (
-    <Box
-      py={UiSpace.Three}
-      borderBottomWidth={UiBorderWidth.OnePx}
-      borderColor={UiBorderColor.Panel}
-    >
-      <Text
-        fontSize={UiFontSize.Xs}
-        color={UiColor.Muted}
-        textTransform={UiTextTransform.Uppercase}
-        letterSpacing={UiLetterSpacing.Wide}
-        fontWeight={UiFontWeight.Semibold}
-        mb={UiSpace.One}
-      >
-        {label}
-      </Text>
-      <Box
-        as="button"
-        fontSize={UiFontSize.Md}
-        fontWeight={UiFontWeight.Medium}
-        color={UiColor.BrandFg}
-        textDecoration={UiTextDecoration.None}
-        cursor={UiCursor.Pointer}
-        bg={UiColor.Transparent}
-        p={UiGap.None}
-        borderWidth={UiBorderWidth.None}
-        _hover={{ textDecoration: UiTextDecoration.Underline }}
-        aria-label={ariaLabel}
-        onClick={onOpen}
-      >
-        {value}
-      </Box>
-    </Box>
-  )
 }
 
 export function LoanDetailDrawer({
@@ -222,18 +138,11 @@ export function LoanDetailDrawer({
   }
 
   if (!loading && error) {
-    body = (
-      <Alert.Root status={UiAlertStatus.Error}>
-        <Alert.Indicator />
-        <Alert.Content>
-          <Alert.Description>{error}</Alert.Description>
-        </Alert.Content>
-      </Alert.Root>
-    )
+    body = <InlineErrorAlert message={error} />
   }
 
   if (!loading && !error && loan) {
-    const memberName = formatLoanMemberName(loan.member)
+    const memberName = formatPersonName(loan.member)
     let returnedAtValue: string = loanStrings.notReturned
     if (loan.returnedAt) {
       returnedAtValue = formatDateTime(loan.returnedAt)
@@ -270,7 +179,7 @@ export function LoanDetailDrawer({
             {loan.book.title}
           </Text>
           <Badge
-            colorPalette={activeBadgePalette(loan.isActive)}
+            colorPalette={booleanBadgePalette(loan.isActive)}
             variant={UiBadgeVariant.Subtle}
           >
             {activeLabel(loan.isActive)}
