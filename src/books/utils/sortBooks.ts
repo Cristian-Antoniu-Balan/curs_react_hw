@@ -10,18 +10,6 @@ function compareNumber(left: number, right: number): number {
   return left - right
 }
 
-function compareBoolean(left: boolean, right: boolean): number {
-  if (left === right) {
-    return 0
-  }
-
-  if (left) {
-    return -1
-  }
-
-  return 1
-}
-
 export function sortBooks(
   books: Book[],
   field: BookSortFieldValue,
@@ -38,10 +26,6 @@ export function sortBooks(
 
     if (field === BookSortField.Copies) {
       return compareNumber(left.copies, right.copies)
-    }
-
-    if (field === BookSortField.Availability) {
-      return compareBoolean(left.isAvailable, right.isAvailable)
     }
 
     return 0

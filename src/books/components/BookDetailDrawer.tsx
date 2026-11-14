@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react'
 import {
   Alert,
+  Badge,
+  Box,
   Drawer,
+  Flex,
   Portal,
   Spinner,
   Stack,
@@ -10,19 +13,66 @@ import {
 import { getBook } from '@/books/api/booksApi'
 import { bookStrings } from '@/books/constants/strings'
 import type { Book } from '@/books/types/book'
+import { availabilityBadgePalette } from '@/books/utils/availabilityBadgePalette'
 import { availabilityLabel } from '@/books/utils/availabilityLabel'
 import { resolveErrorMessage } from '@/books/utils/resolveErrorMessage'
 import {
   UiAlertStatus,
+  UiBadgeVariant,
+  UiBgToken,
+  UiBorderColor,
+  UiBorderWidth,
   UiColor,
   UiDrawerPlacement,
+  UiDrawerSize,
+  UiFlexAlign,
+  UiFlexJustify,
+  UiFontSize,
+  UiFontWeight,
   UiGap,
+  UiInset,
+  UiLetterSpacing,
+  UiOverflow,
+  UiPosition,
+  UiShadow,
+  UiSpace,
+  UiTextTransform,
+  UiWidth,
 } from '@/shared/constants/ui'
 
 type BookDetailDrawerProps = {
   open: boolean
   bookId: string | null
   onOpenChange: (open: boolean) => void
+}
+
+type DetailRowProps = {
+  label: string
+  value: string
+}
+
+function DetailRow({ label, value }: DetailRowProps) {
+  return (
+    <Box
+      py={UiSpace.Three}
+      borderBottomWidth={UiBorderWidth.OnePx}
+      borderColor={UiBorderColor.Panel}
+    >
+      <Text
+        fontSize={UiFontSize.Xs}
+        color={UiColor.Muted}
+        textTransform={UiTextTransform.Uppercase}
+        letterSpacing={UiLetterSpacing.Wide}
+        fontWeight={UiFontWeight.Semibold}
+        mb={UiSpace.One}
+      >
+        {label}
+      </Text>
+      <Text fontSize={UiFontSize.Md} fontWeight={UiFontWeight.Medium}>
+        {value}
+      </Text>
+    </Box>
+  )
 }
 
 export function BookDetailDrawer({
@@ -88,22 +138,33 @@ export function BookDetailDrawer({
 
   if (!loading && !error && book) {
     body = (
-      <Stack gap={UiGap.Two}>
-        <Text>
-          {bookStrings.fieldId}: {book.id}
-        </Text>
-        <Text>
-          {bookStrings.fieldTitle}: {book.title}
-        </Text>
-        <Text>
-          {bookStrings.fieldAuthor}: {book.author}
-        </Text>
-        <Text>
-          {bookStrings.fieldCopies}: {book.copies}
-        </Text>
-        <Text>
-          {bookStrings.fieldAvailability}: {availabilityLabel(book.isAvailable)}
-        </Text>
+      <Stack gap={UiGap.None}>
+        <Flex
+          align={UiFlexAlign.Center}
+          justify={UiFlexJustify.SpaceBetween}
+          gap={UiGap.Three}
+          mb={UiSpace.Four}
+        >
+          <Text
+            fontSize={UiFontSize.Xl}
+            fontWeight={UiFontWeight.Bold}
+            letterSpacing={UiLetterSpacing.Tight}
+          >
+            {book.title}
+          </Text>
+          <Badge
+            colorPalette={availabilityBadgePalette(book.isAvailable)}
+            variant={UiBadgeVariant.Subtle}
+          >
+            {availabilityLabel(book.isAvailable)}
+          </Badge>
+        </Flex>
+        <DetailRow label={bookStrings.fieldAuthor} value={book.author} />
+        <DetailRow
+          label={bookStrings.fieldCopies}
+          value={String(book.copies)}
+        />
+        <DetailRow label={bookStrings.fieldId} value={book.id} />
       </Stack>
     )
   }
@@ -116,18 +177,46 @@ export function BookDetailDrawer({
     <Drawer.Root
       open={open}
       placement={UiDrawerPlacement.End}
+      size={UiDrawerSize.Md}
       onOpenChange={(details) => {
         onOpenChange(details.open)
       }}
     >
       <Portal>
-        <Drawer.Backdrop />
+        <Drawer.Backdrop bg={UiBgToken.Overlay} />
         <Drawer.Positioner>
-          <Drawer.Content>
-            <Drawer.Header>
-              <Drawer.Title>{bookStrings.detailDrawerTitle}</Drawer.Title>
+          <Drawer.Content
+            bg={UiBgToken.AppPanel}
+            borderLeftWidth={UiBorderWidth.OnePx}
+            borderColor={UiBorderColor.Panel}
+            boxShadow={UiShadow.Overlay}
+            overflow={UiOverflow.Hidden}
+          >
+            <Box
+              position={UiPosition.Absolute}
+              left={UiInset.Zero}
+              top={UiInset.Zero}
+              bottom={UiInset.Zero}
+              w={UiWidth.AccentBar}
+              bg={UiColor.BrandSolid}
+            />
+            <Drawer.Header
+              px={UiSpace.Six}
+              pt={UiSpace.Six}
+              pb={UiSpace.Three}
+              borderBottomWidth={UiBorderWidth.OnePx}
+              borderColor={UiBorderColor.Panel}
+            >
+              <Drawer.Title
+                fontWeight={UiFontWeight.Bold}
+                letterSpacing={UiLetterSpacing.Tight}
+              >
+                {bookStrings.detailDrawerTitle}
+              </Drawer.Title>
             </Drawer.Header>
-            <Drawer.Body>{body}</Drawer.Body>
+            <Drawer.Body px={UiSpace.Six} py={UiSpace.Five}>
+              {body}
+            </Drawer.Body>
             <Drawer.CloseTrigger />
           </Drawer.Content>
         </Drawer.Positioner>

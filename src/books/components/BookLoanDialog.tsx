@@ -2,10 +2,8 @@ import { useEffect, useState } from 'react'
 import {
   Alert,
   Button,
-  Dialog,
   Field,
   NativeSelect,
-  Portal,
   Stack,
   Spinner,
 } from '@chakra-ui/react'
@@ -17,11 +15,11 @@ import { bookStrings } from '@/books/constants/strings'
 import type { Book } from '@/books/types/book'
 import { formatMemberLabel } from '@/books/utils/formatMemberLabel'
 import { resolveErrorMessage } from '@/books/utils/resolveErrorMessage'
+import { AppDialogShell } from '@/shared/components/AppDialogShell'
 import {
   UiAlertStatus,
   UiButtonColorPalette,
   UiButtonVariant,
-  UiDialogPlacement,
   UiGap,
   UiNativeSelectSize,
   UiWidth,
@@ -169,51 +167,41 @@ export function BookLoanDialog({
   }
 
   return (
-    <Dialog.Root
+    <AppDialogShell
       open={open}
-      placement={UiDialogPlacement.Center}
-      onOpenChange={(details) => {
-        if (!details.open) {
+      title={bookStrings.loanDialogTitle}
+      onOpenChange={(nextOpen) => {
+        if (!nextOpen) {
           setError(null)
           setLoadError(null)
           setMemberId(BookSelectEmptyValue.None)
         }
-        onOpenChange(details.open)
+        onOpenChange(nextOpen)
       }}
-    >
-      <Portal>
-        <Dialog.Backdrop />
-        <Dialog.Positioner>
-          <Dialog.Content>
-            <Dialog.Header>
-              <Dialog.Title>{bookStrings.loanDialogTitle}</Dialog.Title>
-            </Dialog.Header>
-            <Dialog.Body>{bodyContent}</Dialog.Body>
-            <Dialog.Footer>
-              <Button
-                variant={UiButtonVariant.Outline}
-                disabled={submitting}
-                onClick={() => {
-                  onOpenChange(false)
-                }}
-              >
-                {bookStrings.cancelButton}
-              </Button>
-              <Button
-                colorPalette={UiButtonColorPalette.Blue}
-                loading={submitting}
-                disabled={loadingMembers || memberId.length === 0}
-                onClick={() => {
-                  void handleSubmit()
-                }}
-              >
-                {bookStrings.confirmLoanButton}
-              </Button>
-            </Dialog.Footer>
-            <Dialog.CloseTrigger />
-          </Dialog.Content>
-        </Dialog.Positioner>
-      </Portal>
-    </Dialog.Root>
+      body={bodyContent}
+      footer={
+        <>
+          <Button
+            variant={UiButtonVariant.Outline}
+            disabled={submitting}
+            onClick={() => {
+              onOpenChange(false)
+            }}
+          >
+            {bookStrings.cancelButton}
+          </Button>
+          <Button
+            colorPalette={UiButtonColorPalette.Brand}
+            loading={submitting}
+            disabled={loadingMembers || memberId.length === 0}
+            onClick={() => {
+              void handleSubmit()
+            }}
+          >
+            {bookStrings.confirmLoanButton}
+          </Button>
+        </>
+      }
+    />
   )
 }

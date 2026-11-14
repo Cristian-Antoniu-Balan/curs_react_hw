@@ -2,8 +2,6 @@ import { useState } from 'react'
 import {
   Alert,
   Button,
-  Dialog,
-  Portal,
   Stack,
 } from '@chakra-ui/react'
 import { createBook } from '@/books/api/booksApi'
@@ -15,11 +13,11 @@ import {
   type BookFormValues,
 } from '@/books/utils/toBookRequest'
 import { resolveErrorMessage } from '@/books/utils/resolveErrorMessage'
+import { AppDialogShell } from '@/shared/components/AppDialogShell'
 import {
   UiAlertStatus,
   UiButtonColorPalette,
   UiButtonVariant,
-  UiDialogPlacement,
   UiGap,
 } from '@/shared/constants/ui'
 
@@ -67,58 +65,48 @@ export function BookCreateDialog({
   }
 
   return (
-    <Dialog.Root
+    <AppDialogShell
       open={open}
-      placement={UiDialogPlacement.Center}
-      onOpenChange={(details) => {
-        if (!details.open) {
+      title={bookStrings.createDialogTitle}
+      onOpenChange={(nextOpen) => {
+        if (!nextOpen) {
           setError(null)
           setValues(emptyBookFormValues())
         }
-        onOpenChange(details.open)
+        onOpenChange(nextOpen)
       }}
-    >
-      <Portal>
-        <Dialog.Backdrop />
-        <Dialog.Positioner>
-          <Dialog.Content>
-            <Dialog.Header>
-              <Dialog.Title>{bookStrings.createDialogTitle}</Dialog.Title>
-            </Dialog.Header>
-            <Dialog.Body>
-              <Stack gap={UiGap.Three}>
-                {errorAlert}
-                <BookFormFields
-                  values={values}
-                  onChange={setValues}
-                  disabled={submitting}
-                />
-              </Stack>
-            </Dialog.Body>
-            <Dialog.Footer>
-              <Button
-                variant={UiButtonVariant.Outline}
-                disabled={submitting}
-                onClick={() => {
-                  onOpenChange(false)
-                }}
-              >
-                {bookStrings.cancelButton}
-              </Button>
-              <Button
-                colorPalette={UiButtonColorPalette.Blue}
-                loading={submitting}
-                onClick={() => {
-                  void handleSubmit()
-                }}
-              >
-                {bookStrings.saveButton}
-              </Button>
-            </Dialog.Footer>
-            <Dialog.CloseTrigger />
-          </Dialog.Content>
-        </Dialog.Positioner>
-      </Portal>
-    </Dialog.Root>
+      body={
+        <Stack gap={UiGap.Three}>
+          {errorAlert}
+          <BookFormFields
+            values={values}
+            onChange={setValues}
+            disabled={submitting}
+          />
+        </Stack>
+      }
+      footer={
+        <>
+          <Button
+            variant={UiButtonVariant.Outline}
+            disabled={submitting}
+            onClick={() => {
+              onOpenChange(false)
+            }}
+          >
+            {bookStrings.cancelButton}
+          </Button>
+          <Button
+            colorPalette={UiButtonColorPalette.Brand}
+            loading={submitting}
+            onClick={() => {
+              void handleSubmit()
+            }}
+          >
+            {bookStrings.saveButton}
+          </Button>
+        </>
+      }
+    />
   )
 }

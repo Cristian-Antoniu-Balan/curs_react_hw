@@ -2,8 +2,6 @@ import { useState } from 'react'
 import {
   Alert,
   Button,
-  Dialog,
-  Portal,
   Stack,
   Text,
 } from '@chakra-ui/react'
@@ -11,11 +9,11 @@ import { deleteBook } from '@/books/api/booksApi'
 import { bookStrings } from '@/books/constants/strings'
 import type { Book } from '@/books/types/book'
 import { resolveErrorMessage } from '@/books/utils/resolveErrorMessage'
+import { AppDialogShell } from '@/shared/components/AppDialogShell'
 import {
   UiAlertStatus,
   UiButtonColorPalette,
   UiButtonVariant,
-  UiDialogPlacement,
   UiGap,
 } from '@/shared/constants/ui'
 
@@ -78,53 +76,43 @@ export function BookDeleteDialog({
   }
 
   return (
-    <Dialog.Root
+    <AppDialogShell
       open={open}
-      placement={UiDialogPlacement.Center}
-      onOpenChange={(details) => {
-        if (!details.open) {
+      title={bookStrings.deleteDialogTitle}
+      onOpenChange={(nextOpen) => {
+        if (!nextOpen) {
           setError(null)
         }
-        onOpenChange(details.open)
+        onOpenChange(nextOpen)
       }}
-    >
-      <Portal>
-        <Dialog.Backdrop />
-        <Dialog.Positioner>
-          <Dialog.Content>
-            <Dialog.Header>
-              <Dialog.Title>{bookStrings.deleteDialogTitle}</Dialog.Title>
-            </Dialog.Header>
-            <Dialog.Body>
-              <Stack gap={UiGap.Three}>
-                {errorAlert}
-                {confirmText}
-              </Stack>
-            </Dialog.Body>
-            <Dialog.Footer>
-              <Button
-                variant={UiButtonVariant.Outline}
-                disabled={submitting}
-                onClick={() => {
-                  onOpenChange(false)
-                }}
-              >
-                {bookStrings.cancelButton}
-              </Button>
-              <Button
-                colorPalette={UiButtonColorPalette.Red}
-                loading={submitting}
-                onClick={() => {
-                  void handleDelete()
-                }}
-              >
-                {bookStrings.confirmDeleteButton}
-              </Button>
-            </Dialog.Footer>
-            <Dialog.CloseTrigger />
-          </Dialog.Content>
-        </Dialog.Positioner>
-      </Portal>
-    </Dialog.Root>
+      body={
+        <Stack gap={UiGap.Three}>
+          {errorAlert}
+          {confirmText}
+        </Stack>
+      }
+      footer={
+        <>
+          <Button
+            variant={UiButtonVariant.Outline}
+            disabled={submitting}
+            onClick={() => {
+              onOpenChange(false)
+            }}
+          >
+            {bookStrings.cancelButton}
+          </Button>
+          <Button
+            colorPalette={UiButtonColorPalette.Red}
+            loading={submitting}
+            onClick={() => {
+              void handleDelete()
+            }}
+          >
+            {bookStrings.confirmDeleteButton}
+          </Button>
+        </>
+      }
+    />
   )
 }

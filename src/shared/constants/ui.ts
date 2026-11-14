@@ -1,6 +1,8 @@
 export const UiHeadingSize = {
+  Md: 'md',
   Lg: 'lg',
   Xl: 'xl',
+  TwoXl: '2xl',
 } as const
 
 export type UiHeadingSize = (typeof UiHeadingSize)[keyof typeof UiHeadingSize]
@@ -8,9 +10,31 @@ export type UiHeadingSize = (typeof UiHeadingSize)[keyof typeof UiHeadingSize]
 export const UiColor = {
   Error: 'fg.error',
   Muted: 'fg.muted',
+  Fg: 'fg',
+  BrandFg: 'brand.fg',
+  BrandSolid: 'brand.solid',
+  Transparent: 'transparent',
 } as const
 
 export type UiColor = (typeof UiColor)[keyof typeof UiColor]
+
+export const UiDisplay = {
+  InlineFlex: 'inline-flex',
+} as const
+
+export type UiDisplay = (typeof UiDisplay)[keyof typeof UiDisplay]
+
+export const UiTransition = {
+  Nav: 'background 160ms ease, color 160ms ease',
+} as const
+
+export type UiTransition = (typeof UiTransition)[keyof typeof UiTransition]
+
+export const UiOverflow = {
+  Hidden: 'hidden',
+} as const
+
+export type UiOverflow = (typeof UiOverflow)[keyof typeof UiOverflow]
 
 export const UiStackAlign = {
   Stretch: 'stretch',
@@ -26,6 +50,7 @@ export const UiFlexAlign = {
 export type UiFlexAlign = (typeof UiFlexAlign)[keyof typeof UiFlexAlign]
 
 export const UiFlexJustify = {
+  Center: 'center',
   SpaceBetween: 'space-between',
 } as const
 
@@ -65,20 +90,27 @@ export const UiGap = {
   Two: '2',
   Three: '3',
   Four: '4',
+  Five: '5',
+  Six: '6',
 } as const
 
 export type UiGap = (typeof UiGap)[keyof typeof UiGap]
 
 export const UiSpace = {
+  One: '1',
+  Two: '2',
   Three: '3',
   Four: '4',
+  Five: '5',
   Six: '6',
+  Eight: '8',
 } as const
 
 export type UiSpace = (typeof UiSpace)[keyof typeof UiSpace]
 
 export const UiMinHeight = {
   Viewport: '100vh',
+  BrandMark: '10px',
 } as const
 
 export type UiMinHeight = (typeof UiMinHeight)[keyof typeof UiMinHeight]
@@ -97,6 +129,7 @@ export type UiMargin = (typeof UiMargin)[keyof typeof UiMargin]
 
 export const UiFontWeight = {
   Medium: 500,
+  Semibold: 600,
   Bold: 700,
 } as const
 
@@ -129,8 +162,10 @@ export type UiButtonSize = (typeof UiButtonSize)[keyof typeof UiButtonSize]
 
 export const UiButtonColorPalette = {
   Blue: 'blue',
+  Brand: 'brand',
   Red: 'red',
   Gray: 'gray',
+  Green: 'green',
 } as const
 
 export type UiButtonColorPalette =
@@ -193,6 +228,9 @@ export const UiWidth = {
   FilterSm: '240px',
   SearchMd: '280px',
   ToastSm: 'sm',
+  BrandMark: '10px',
+  AccentBar: '4px',
+  SortIndicator: '1.25em',
 } as const
 
 export type UiWidth = (typeof UiWidth)[keyof typeof UiWidth]
@@ -233,12 +271,153 @@ export const UiCursor = {
 export type UiCursor = (typeof UiCursor)[keyof typeof UiCursor]
 
 export const UiBgToken = {
-  RowHover: 'blue.subtle',
-  RowHoverCell: 'blue.subtle',
+  RowHover: 'brand.subtle',
+  RowHoverCell: 'brand.subtle',
+  AppCanvas: 'app.canvas',
+  AppCanvasWash: 'app.canvasWash',
+  AppHeader: 'app.header',
+  AppPanel: 'app.panel',
+  AppPanelGlass: 'app.panelGlass',
+  AppNavActive: 'app.navActive',
+  Overlay: 'app.overlay',
+  TableHeader: 'brand.subtle',
 } as const
 
 export type UiBgToken = (typeof UiBgToken)[keyof typeof UiBgToken]
 
+export const UiBorderColor = {
+  Panel: 'app.panelBorder',
+} as const
+
+export type UiBorderColor = (typeof UiBorderColor)[keyof typeof UiBorderColor]
+
+export const UiShadow = {
+  Panel: 'panel',
+  Overlay: 'overlay',
+} as const
+
+export type UiShadow = (typeof UiShadow)[keyof typeof UiShadow]
+
+export const UiRadius = {
+  Panel: 'panel',
+  Control: 'control',
+  Full: 'full',
+} as const
+
+export type UiRadius = (typeof UiRadius)[keyof typeof UiRadius]
+
+export const UiBackdropFilter = {
+  Header: 'saturate(1.2) blur(12px)',
+  Panel: 'saturate(1.15) blur(14px)',
+} as const
+
+export type UiBackdropFilter =
+  (typeof UiBackdropFilter)[keyof typeof UiBackdropFilter]
+
+export const UiPosition = {
+  Sticky: 'sticky',
+  Absolute: 'absolute',
+  Relative: 'relative',
+  Fixed: 'fixed',
+} as const
+
+export type UiPosition = (typeof UiPosition)[keyof typeof UiPosition]
+
+export const UiInset = {
+  Zero: '0',
+} as const
+
+export type UiInset = (typeof UiInset)[keyof typeof UiInset]
+
+export const UiBgSize = {
+  Cover: 'cover',
+} as const
+
+export type UiBgSize = (typeof UiBgSize)[keyof typeof UiBgSize]
+
+export const UiBgPos = {
+  Center: 'center',
+} as const
+
+export type UiBgPos = (typeof UiBgPos)[keyof typeof UiBgPos]
+
+export const UiBgRepeat = {
+  NoRepeat: 'no-repeat',
+} as const
+
+export type UiBgRepeat = (typeof UiBgRepeat)[keyof typeof UiBgRepeat]
+
+export const UiBgAttachment = {
+  Fixed: 'fixed',
+} as const
+
+export type UiBgAttachment =
+  (typeof UiBgAttachment)[keyof typeof UiBgAttachment]
+
+export const UiZIndex = {
+  Header: 20,
+  Content: 1,
+  Background: 0,
+} as const
+
+export type UiZIndex = (typeof UiZIndex)[keyof typeof UiZIndex]
+
+export const UiDialogSize = {
+  Md: 'md',
+} as const
+
+export type UiDialogSize = (typeof UiDialogSize)[keyof typeof UiDialogSize]
+
+export const UiDrawerSize = {
+  Md: 'md',
+  Lg: 'lg',
+} as const
+
+export type UiDrawerSize = (typeof UiDrawerSize)[keyof typeof UiDrawerSize]
+
+export const UiBadgeColorPalette = {
+  Green: 'green',
+  Orange: 'orange',
+  Gray: 'gray',
+  Brand: 'brand',
+} as const
+
+export type UiBadgeColorPalette =
+  (typeof UiBadgeColorPalette)[keyof typeof UiBadgeColorPalette]
+
+export const UiBadgeVariant = {
+  Subtle: 'subtle',
+  Solid: 'solid',
+} as const
+
+export type UiBadgeVariant =
+  (typeof UiBadgeVariant)[keyof typeof UiBadgeVariant]
+
+export const UiFontSize = {
+  Xs: 'xs',
+  Sm: 'sm',
+  Md: 'md',
+  Lg: 'lg',
+  Xl: 'xl',
+  TwoXl: '2xl',
+} as const
+
+export type UiFontSize = (typeof UiFontSize)[keyof typeof UiFontSize]
+
+export const UiLetterSpacing = {
+  Tight: '-0.02em',
+  Wide: '0.04em',
+} as const
+
+export type UiLetterSpacing =
+  (typeof UiLetterSpacing)[keyof typeof UiLetterSpacing]
+
+export const UiTextTransform = {
+  Uppercase: 'uppercase',
+} as const
+
+export type UiTextTransform =
+  (typeof UiTextTransform)[keyof typeof UiTextTransform]
 
 export const UiTableStriped = {
   True: true,
@@ -255,12 +434,31 @@ export type UiSortDirection =
   (typeof UiSortDirection)[keyof typeof UiSortDirection]
 
 export const UiSortIndicator = {
-  Asc: ' ▲',
-  Desc: ' ▼',
+  Asc: '▲',
+  Desc: '▼',
 } as const
 
 export type UiSortIndicator =
   (typeof UiSortIndicator)[keyof typeof UiSortIndicator]
+
+export const UiVisibility = {
+  Visible: 'visible',
+  Hidden: 'hidden',
+} as const
+
+export type UiVisibility = (typeof UiVisibility)[keyof typeof UiVisibility]
+
+export const UiWhiteSpace = {
+  NoWrap: 'nowrap',
+} as const
+
+export type UiWhiteSpace = (typeof UiWhiteSpace)[keyof typeof UiWhiteSpace]
+
+export const UiTextAlign = {
+  Center: 'center',
+} as const
+
+export type UiTextAlign = (typeof UiTextAlign)[keyof typeof UiTextAlign]
 
 export const UiFlexGrow = {
   One: '1',
@@ -287,9 +485,3 @@ export const UiFieldOrientation = {
 
 export type UiFieldOrientation =
   (typeof UiFieldOrientation)[keyof typeof UiFieldOrientation]
-
-export const UiWhiteSpace = {
-  NoWrap: 'nowrap',
-} as const
-
-export type UiWhiteSpace = (typeof UiWhiteSpace)[keyof typeof UiWhiteSpace]

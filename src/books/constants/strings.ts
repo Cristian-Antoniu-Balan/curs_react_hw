@@ -1,5 +1,6 @@
 export const bookStrings = {
   title: 'Books',
+  description: 'Browse the catalog, adjust stock, and open a book for details.',
   empty: 'No books found.',
   emptySearch: 'No books match your search.',
   loadFailed: 'Failed to load books',

@@ -2,7 +2,6 @@ export const BookSortField = {
   Title: 'title',
   Author: 'author',
   Copies: 'copies',
-  Availability: 'availability',
 } as const
 
 export type BookSortField = (typeof BookSortField)[keyof typeof BookSortField]

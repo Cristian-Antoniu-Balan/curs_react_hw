@@ -22,6 +22,7 @@ import type { Book } from '@/books/types/book'
 import { filterBooksBySearch } from '@/books/utils/filterBooksBySearch'
 import { sortBooks } from '@/books/utils/sortBooks'
 import { ResourcePage } from '@/shared/components/ResourcePage'
+import { SurfacePanel } from '@/shared/components/SurfacePanel'
 import {
   UiButtonColorPalette,
   UiColor,
@@ -33,6 +34,7 @@ import {
   UiGap,
   UiMinWidth,
   UiSortDirection,
+  UiSpace,
   type UiSortDirection as UiSortDirectionValue,
 } from '@/shared/constants/ui'
 import { notifySuccess } from '@/shared/toast/notify'
@@ -92,31 +94,33 @@ export function BooksPage() {
   }
 
   const toolbar = (
-    <Flex
-      align={UiFlexAlign.End}
-      justify={UiFlexJustify.SpaceBetween}
-      gap={UiGap.Three}
-      wrap={UiFlexWrap.Wrap}
-    >
+    <SurfacePanel padding={UiSpace.Five}>
       <Flex
-        gap={UiGap.Three}
         align={UiFlexAlign.End}
-        flex={UiFlexGrow.One}
-        minW={UiMinWidth.None}
+        justify={UiFlexJustify.SpaceBetween}
+        gap={UiGap.Three}
+        wrap={UiFlexWrap.Wrap}
       >
-        <BooksSearchField value={search} onChange={setSearch} />
-        <BooksAvailabilityFilter value={filter} onChange={setFilter} />
+        <Flex
+          gap={UiGap.Three}
+          align={UiFlexAlign.End}
+          flex={UiFlexGrow.One}
+          minW={UiMinWidth.None}
+        >
+          <BooksSearchField value={search} onChange={setSearch} />
+          <BooksAvailabilityFilter value={filter} onChange={setFilter} />
+        </Flex>
+        <Button
+          colorPalette={UiButtonColorPalette.Brand}
+          flexShrink={UiFlexShrink.None}
+          onClick={() => {
+            setCreateOpen(true)
+          }}
+        >
+          {bookStrings.createButton}
+        </Button>
       </Flex>
-      <Button
-        colorPalette={UiButtonColorPalette.Blue}
-        flexShrink={UiFlexShrink.None}
-        onClick={() => {
-          setCreateOpen(true)
-        }}
-      >
-        {bookStrings.createButton}
-      </Button>
-    </Flex>
+    </SurfacePanel>
   )
 
   const dialogs = (
@@ -182,10 +186,15 @@ export function BooksPage() {
 
   if (loading) {
     return (
-      <ResourcePage title={bookStrings.title}>
+      <ResourcePage
+        title={bookStrings.title}
+        description={bookStrings.description}
+      >
         <Stack gap={UiGap.Four}>
           {toolbar}
-          <Spinner />
+          <SurfacePanel padding={UiSpace.Five}>
+            <Spinner />
+          </SurfacePanel>
         </Stack>
         {dialogs}
       </ResourcePage>
@@ -194,10 +203,15 @@ export function BooksPage() {
 
   if (error) {
     return (
-      <ResourcePage title={bookStrings.title}>
+      <ResourcePage
+        title={bookStrings.title}
+        description={bookStrings.description}
+      >
         <Stack gap={UiGap.Four}>
           {toolbar}
-          <Text color={UiColor.Error}>{error}</Text>
+          <SurfacePanel padding={UiSpace.Five}>
+            <Text color={UiColor.Error}>{error}</Text>
+          </SurfacePanel>
         </Stack>
         {dialogs}
       </ResourcePage>
@@ -206,10 +220,15 @@ export function BooksPage() {
 
   if (books === null || books.length === 0) {
     return (
-      <ResourcePage title={bookStrings.title}>
+      <ResourcePage
+        title={bookStrings.title}
+        description={bookStrings.description}
+      >
         <Stack gap={UiGap.Four}>
           {toolbar}
-          <Text color={UiColor.Muted}>{bookStrings.empty}</Text>
+          <SurfacePanel padding={UiSpace.Five}>
+            <Text color={UiColor.Muted}>{bookStrings.empty}</Text>
+          </SurfacePanel>
         </Stack>
         {dialogs}
       </ResourcePage>
@@ -218,10 +237,15 @@ export function BooksPage() {
 
   if (visibleBooks.length === 0) {
     return (
-      <ResourcePage title={bookStrings.title}>
+      <ResourcePage
+        title={bookStrings.title}
+        description={bookStrings.description}
+      >
         <Stack gap={UiGap.Four}>
           {toolbar}
-          <Text color={UiColor.Muted}>{bookStrings.emptySearch}</Text>
+          <SurfacePanel padding={UiSpace.Five}>
+            <Text color={UiColor.Muted}>{bookStrings.emptySearch}</Text>
+          </SurfacePanel>
         </Stack>
         {dialogs}
       </ResourcePage>
@@ -229,7 +253,10 @@ export function BooksPage() {
   }
 
   return (
-    <ResourcePage title={bookStrings.title}>
+    <ResourcePage
+      title={bookStrings.title}
+      description={bookStrings.description}
+    >
       <Stack gap={UiGap.Four}>
         {toolbar}
         <BooksTable
