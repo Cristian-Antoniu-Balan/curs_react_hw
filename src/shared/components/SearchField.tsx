@@ -1,6 +1,9 @@
-import type { ReactNode } from 'react'
-import { Field, Input } from '@chakra-ui/react'
+import { useRef, type ReactNode } from 'react'
+import { CloseButton, Field, Input, InputGroup } from '@chakra-ui/react'
+import { strings } from '@/shared/constants/strings'
 import {
+  UiCloseButtonMe,
+  UiCloseButtonSize,
   UiFieldOrientation,
   UiInputType,
   UiWidth,
@@ -19,6 +22,20 @@ export function SearchField({
   value,
   onChange,
 }: SearchFieldProps) {
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  const endElement = value && (
+    <CloseButton
+      size={UiCloseButtonSize.Xs}
+      me={UiCloseButtonMe.Tight}
+      aria-label={strings.filters.clearSearchAria}
+      onClick={() => {
+        onChange('')
+        inputRef.current?.focus()
+      }}
+    />
+  )
+
   return (
     <Field.Root
       orientation={UiFieldOrientation.Vertical}
@@ -26,15 +43,18 @@ export function SearchField({
       w={UiWidth.Full}
     >
       <Field.Label>{label}</Field.Label>
-      <Input
-        type={UiInputType.Text}
-        value={value}
-        placeholder={placeholder}
-        w={UiWidth.Full}
-        onChange={(event) => {
-          onChange(event.target.value)
-        }}
-      />
+      <InputGroup endElement={endElement}>
+        <Input
+          ref={inputRef}
+          type={UiInputType.Text}
+          value={value}
+          placeholder={placeholder}
+          w={UiWidth.Full}
+          onChange={(event) => {
+            onChange(event.target.value)
+          }}
+        />
+      </InputGroup>
     </Field.Root>
   )
 }

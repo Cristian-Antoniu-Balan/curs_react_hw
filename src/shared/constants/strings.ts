@@ -11,6 +11,10 @@ export const strings = {
     back: 'Back',
     backAria: 'Go back',
   },
+  filters: {
+    clearAll: 'Clear all',
+    clearSearchAria: 'Clear search',
+  },
   api: {
     requestFailedPrefix: 'Request failed with status ',
   },

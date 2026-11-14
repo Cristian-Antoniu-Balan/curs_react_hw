@@ -17,6 +17,7 @@ import { useBooksList } from '@/books/hooks/useBooksList'
 import type { Book } from '@/books/types/book'
 import { filterBooksBySearch } from '@/books/utils/filterBooksBySearch'
 import { sortBooks } from '@/books/utils/sortBooks'
+import { ClearFiltersButton } from '@/shared/components/ClearFiltersButton'
 import { ResourcePage } from '@/shared/components/ResourcePage'
 import { SearchField } from '@/shared/components/SearchField'
 import { SelectFilter } from '@/shared/components/SelectFilter'
@@ -88,6 +89,14 @@ export function BooksPage() {
     setSortDirection(UiSortDirection.Asc)
   }
 
+  const hasActiveFilters =
+    search.length > 0 || filter !== BookAvailabilityFilter.All
+
+  function clearAllFilters() {
+    setSearch('')
+    setFilter(BookAvailabilityFilter.All)
+  }
+
   const toolbar = (
     <SurfacePanel padding={UiSpace.Five}>
       <Flex
@@ -101,6 +110,7 @@ export function BooksPage() {
           align={UiFlexAlign.End}
           flex={UiFlexGrow.One}
           minW={UiMinWidth.None}
+          wrap={UiFlexWrap.Wrap}
         >
           <SearchField
             label={bookStrings.searchLabel}
@@ -110,13 +120,11 @@ export function BooksPage() {
           />
           <SelectFilter
             label={bookStrings.filterLabel}
+            placeholder={bookStrings.filterAll}
             value={filter}
+            emptyValue={BookAvailabilityFilter.All}
             onChange={setFilter}
             options={[
-              {
-                value: BookAvailabilityFilter.All,
-                label: bookStrings.filterAll,
-              },
               {
                 value: BookAvailabilityFilter.Available,
                 label: bookStrings.filterAvailable,
@@ -126,6 +134,10 @@ export function BooksPage() {
                 label: bookStrings.filterUnavailable,
               },
             ]}
+          />
+          <ClearFiltersButton
+            disabled={!hasActiveFilters}
+            onClick={clearAllFilters}
           />
         </Flex>
         <Button

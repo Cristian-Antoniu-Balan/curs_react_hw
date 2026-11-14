@@ -20,6 +20,7 @@ import type { Member } from '@/members/types/member'
 import { filterMembersByActiveLoans } from '@/members/utils/filterMembersByActiveLoans'
 import { filterMembersBySearch } from '@/members/utils/filterMembersBySearch'
 import { sortMembers } from '@/members/utils/sortMembers'
+import { ClearFiltersButton } from '@/shared/components/ClearFiltersButton'
 import { ResourcePage } from '@/shared/components/ResourcePage'
 import { SearchField } from '@/shared/components/SearchField'
 import { SelectFilter } from '@/shared/components/SelectFilter'
@@ -90,6 +91,14 @@ export function MembersPage() {
     setSortDirection(UiSortDirection.Asc)
   }
 
+  const hasActiveFilters =
+    search.length > 0 || activeLoansFilter !== MemberActiveLoansFilter.All
+
+  function clearAllFilters() {
+    setSearch('')
+    setActiveLoansFilter(MemberActiveLoansFilter.All)
+  }
+
   const toolbar = (
     <SurfacePanel padding={UiSpace.Five}>
       <Flex
@@ -103,6 +112,7 @@ export function MembersPage() {
           align={UiFlexAlign.End}
           flex={UiFlexGrow.One}
           minW={UiMinWidth.None}
+          wrap={UiFlexWrap.Wrap}
         >
           <SearchField
             label={memberStrings.searchLabel}
@@ -112,13 +122,11 @@ export function MembersPage() {
           />
           <SelectFilter
             label={memberStrings.filterLabel}
+            placeholder={memberStrings.filterAll}
             value={activeLoansFilter}
+            emptyValue={MemberActiveLoansFilter.All}
             onChange={setActiveLoansFilter}
             options={[
-              {
-                value: MemberActiveLoansFilter.All,
-                label: memberStrings.filterAll,
-              },
               {
                 value: MemberActiveLoansFilter.Active,
                 label: memberStrings.filterActive,
@@ -128,6 +136,10 @@ export function MembersPage() {
                 label: memberStrings.filterInactive,
               },
             ]}
+          />
+          <ClearFiltersButton
+            disabled={!hasActiveFilters}
+            onClick={clearAllFilters}
           />
         </Flex>
         <Button

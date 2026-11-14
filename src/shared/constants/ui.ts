@@ -227,6 +227,27 @@ export const UiNativeSelectSize = {
 export type UiNativeSelectSize =
   (typeof UiNativeSelectSize)[keyof typeof UiNativeSelectSize]
 
+export const UiSelectSize = {
+  Sm: 'sm',
+  Md: 'md',
+} as const
+
+export type UiSelectSize = (typeof UiSelectSize)[keyof typeof UiSelectSize]
+
+export const UiCloseButtonSize = {
+  Xs: 'xs',
+} as const
+
+export type UiCloseButtonSize =
+  (typeof UiCloseButtonSize)[keyof typeof UiCloseButtonSize]
+
+export const UiCloseButtonMe = {
+  Tight: '-2',
+} as const
+
+export type UiCloseButtonMe =
+  (typeof UiCloseButtonMe)[keyof typeof UiCloseButtonMe]
+
 export const UiFlexDirection = {
   Row: 'row',
   Column: 'column',

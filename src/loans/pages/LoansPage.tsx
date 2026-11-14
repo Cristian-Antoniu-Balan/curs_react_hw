@@ -21,6 +21,7 @@ import { filterLoansByMember } from '@/loans/utils/filterLoansByMember'
 import { loanBookFilterOptions } from '@/loans/utils/loanBookFilterOptions'
 import { loanMemberFilterOptions } from '@/loans/utils/loanMemberFilterOptions'
 import { sortLoans } from '@/loans/utils/sortLoans'
+import { ClearFiltersButton } from '@/shared/components/ClearFiltersButton'
 import { ResourcePage } from '@/shared/components/ResourcePage'
 import { SelectFilter } from '@/shared/components/SelectFilter'
 import { SurfacePanel } from '@/shared/components/SurfacePanel'
@@ -134,6 +135,17 @@ export function LoansPage() {
     setSortDirection(UiSortDirection.Asc)
   }
 
+  const hasActiveFilters =
+    activeFilter !== LoanActiveFilter.All ||
+    bookFilter !== LoanEntityFilter.All ||
+    memberFilter !== LoanEntityFilter.All
+
+  function clearAllFilters() {
+    setActiveFilter(LoanActiveFilter.All)
+    setBookFilter(LoanEntityFilter.All)
+    setMemberFilter(LoanEntityFilter.All)
+  }
+
   const toolbar = (
     <SurfacePanel padding={UiSpace.Five}>
       <Flex
@@ -151,13 +163,11 @@ export function LoansPage() {
         >
           <SelectFilter
             label={loanStrings.filterLabel}
+            placeholder={loanStrings.filterAll}
             value={activeFilter}
+            emptyValue={LoanActiveFilter.All}
             onChange={setActiveFilter}
             options={[
-              {
-                value: LoanActiveFilter.All,
-                label: loanStrings.filterAll,
-              },
               {
                 value: LoanActiveFilter.Active,
                 label: loanStrings.filterActive,
@@ -170,33 +180,29 @@ export function LoansPage() {
           />
           <SelectFilter
             label={loanStrings.filterBookLabel}
+            placeholder={loanStrings.filterBookAll}
             value={bookFilter}
+            emptyValue={LoanEntityFilter.All}
             onChange={setBookFilter}
-            options={[
-              {
-                value: LoanEntityFilter.All,
-                label: loanStrings.filterBookAll,
-              },
-              ...bookOptions.map((option) => ({
-                value: option.id,
-                label: option.title,
-              })),
-            ]}
+            options={bookOptions.map((option) => ({
+              value: option.id,
+              label: option.title,
+            }))}
           />
           <SelectFilter
             label={loanStrings.filterMemberLabel}
+            placeholder={loanStrings.filterMemberAll}
             value={memberFilter}
+            emptyValue={LoanEntityFilter.All}
             onChange={setMemberFilter}
-            options={[
-              {
-                value: LoanEntityFilter.All,
-                label: loanStrings.filterMemberAll,
-              },
-              ...memberOptions.map((option) => ({
-                value: option.id,
-                label: option.label,
-              })),
-            ]}
+            options={memberOptions.map((option) => ({
+              value: option.id,
+              label: option.label,
+            }))}
+          />
+          <ClearFiltersButton
+            disabled={!hasActiveFilters}
+            onClick={clearAllFilters}
           />
         </Flex>
         <Button
