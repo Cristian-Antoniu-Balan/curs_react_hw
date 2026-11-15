@@ -1,54 +1,54 @@
-import { HttpHeaderName, MediaType } from '@/shared/constants/http'
-import { ProblemDetailsField } from '@/shared/constants/problemDetails'
-import { ApiError, type ProblemDetails } from '@/shared/types/apiError'
+import { HttpHeaderName, MediaType } from '@/shared/constants/http';
+import { ProblemDetailsField } from '@/shared/constants/problemDetails';
+import { ApiError, type ProblemDetails } from '@/shared/types/apiError';
 
 export type ApiRequestOptions = Omit<RequestInit, 'body'> & {
-  body?: unknown
-  query?: Record<string, string | number | boolean | null | undefined>
-}
+  body?: unknown;
+  query?: Record<string, string | number | boolean | null | undefined>;
+};
 
 function buildUrl(path: string, query?: ApiRequestOptions['query']): string {
   if (!query) {
-    return path
+    return path;
   }
 
-  const params = new URLSearchParams()
+  const params = new URLSearchParams();
   for (const [key, value] of Object.entries(query)) {
     if (value === null || value === undefined) {
-      continue
+      continue;
     }
-    params.set(key, String(value))
+    params.set(key, String(value));
   }
 
-  const queryString = params.toString()
+  const queryString = params.toString();
   if (queryString.length === 0) {
-    return path
+    return path;
   }
 
-  return `${path}?${queryString}`
+  return `${path}?${queryString}`;
 }
 
 function parseProblemDetails(bodyText: string): ProblemDetails | null {
   if (bodyText.trim().length === 0) {
-    return null
+    return null;
   }
 
   try {
-    const parsed: unknown = JSON.parse(bodyText)
+    const parsed: unknown = JSON.parse(bodyText);
     if (typeof parsed !== 'object' || parsed === null) {
-      return null
+      return null;
     }
 
-    const hasTitle = ProblemDetailsField.Title in parsed
-    const hasDetail = ProblemDetailsField.Detail in parsed
-    const hasStatus = ProblemDetailsField.Status in parsed
+    const hasTitle = ProblemDetailsField.Title in parsed;
+    const hasDetail = ProblemDetailsField.Detail in parsed;
+    const hasStatus = ProblemDetailsField.Status in parsed;
     if (!hasTitle && !hasDetail && !hasStatus) {
-      return null
+      return null;
     }
 
-    return parsed as ProblemDetails
+    return parsed as ProblemDetails;
   } catch {
-    return null
+    return null;
   }
 }
 
@@ -56,41 +56,42 @@ export async function apiRequest<T>(
   path: string,
   options: ApiRequestOptions = {},
 ): Promise<T> {
-  const { body, query, headers, ...rest } = options
-  const url = buildUrl(path, query)
+  const { body, query, headers, ...rest } = options;
+  const url = buildUrl(path, query);
 
-  const requestHeaders = new Headers(headers)
+  const requestHeaders = new Headers(headers);
   if (!requestHeaders.has(HttpHeaderName.Accept)) {
-    requestHeaders.set(HttpHeaderName.Accept, MediaType.ApplicationJson)
+    requestHeaders.set(HttpHeaderName.Accept, MediaType.ApplicationJson);
   }
   if (body !== undefined && !requestHeaders.has(HttpHeaderName.ContentType)) {
-    requestHeaders.set(HttpHeaderName.ContentType, MediaType.ApplicationJson)
+    requestHeaders.set(HttpHeaderName.ContentType, MediaType.ApplicationJson);
   }
 
-  let requestBody: string | undefined
+  let requestBody: string | undefined;
   if (body !== undefined) {
-    requestBody = JSON.stringify(body)
+    requestBody = JSON.stringify(body);
   }
 
   const response = await fetch(url, {
     ...rest,
     headers: requestHeaders,
     body: requestBody,
-  })
+  });
 
-  const bodyText = await response.text()
+  const bodyText = await response.text();
 
   if (!response.ok) {
     throw new ApiError(
       response.status,
       bodyText,
       parseProblemDetails(bodyText),
-    )
+      response.headers.get(HttpHeaderName.ContentType),
+    );
   }
 
   if (bodyText.trim().length === 0) {
-    return undefined as T
+    return undefined as T;
   }
 
-  return JSON.parse(bodyText) as T
+  return JSON.parse(bodyText) as T;
 }
