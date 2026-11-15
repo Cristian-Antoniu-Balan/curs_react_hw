@@ -34,7 +34,7 @@ jobs:
       - name: build
         run: npm run build
         env:
-          VITE_API_BASE_PATH: ${{ secrets.VITE_API_BASE_URL }}
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
 
       - name: SPA fallback for Github Pages
         run: cp dist/index.html dist/404.html
