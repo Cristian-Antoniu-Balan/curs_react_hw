@@ -7,9 +7,22 @@ export type ApiRequestOptions = Omit<RequestInit, 'body'> & {
   query?: Record<string, string | number | boolean | null | undefined>;
 };
 
+function apiBaseUrl(): string {
+  const value = import.meta.env.VITE_API_BASE_URL;
+  if (typeof value !== 'string') {
+    return '';
+  }
+  return value.replace(/\/$/, '');
+}
+
 function buildUrl(path: string, query?: ApiRequestOptions['query']): string {
+  const base = apiBaseUrl();
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  const withBase =
+    base.length > 0 ? `${base}${normalizedPath}` : normalizedPath;
+
   if (!query) {
-    return path;
+    return withBase;
   }
 
   const params = new URLSearchParams();
@@ -22,10 +35,10 @@ function buildUrl(path: string, query?: ApiRequestOptions['query']): string {
 
   const queryString = params.toString();
   if (queryString.length === 0) {
-    return path;
+    return withBase;
   }
 
-  return `${path}?${queryString}`;
+  return `${withBase}?${queryString}`;
 }
 
 function parseProblemDetails(bodyText: string): ProblemDetails | null {
